@@ -1,0 +1,39 @@
+{
+    "model_name": "XGBoost + Optuna",
+    "target_column": "Potability",
+    "feature_order": [
+        "ph",
+        "Hardness",
+        "Solids",
+        "Chloramines",
+        "Sulfate",
+        "Conductivity",
+        "Organic_carbon",
+        "Trihalomethanes",
+        "Turbidity"
+    ],
+    "class_mapping": {
+        "0": "Tidak Layak Minum",
+        "1": "Layak Minum"
+    },
+    "prediction_threshold": 0.5,
+    "random_state": 42,
+    "final_split": "80:20",
+    "best_params": {
+        "max_depth": 9,
+        "eta": 0.024650928916725923,
+        "subsample": 0.7648614956393701,
+        "colsample_bytree": 0.5343459258639497,
+        "lambda": 0.45480582994977503,
+        "alpha": 0.0156415306931996,
+        "gamma": 0.1477121963446753,
+        "min_child_weight": 1,
+        "objective": "binary:logistic",
+        "eval_metric": "logloss",
+        "seed": 42,
+        "verbosity": 0,
+        "tree_method": "hist",
+        "nthread": -1
+    },
+    "exported_at": "2026-05-05 18:11:08"
+}
