@@ -9,13 +9,245 @@ import xgboost as xgb
 
 
 # =====================================================
+# GT-MARU THEME (CSS Injection)
+# =====================================================
+def apply_gt_maru_theme():
+    css = """
+    <style>
+    /* ===== Tokens (from Gt-maru spec) ===== */
+    :root{
+      --color-sky-blue:#0068ff;
+      --color-sunshine-yellow:#ffff55;
+      --color-bubblegum-pink:#ff8080;
+      --color-tangerine:#ff9400;
+      --color-lime-green:#00bf3a;
+      --color-lemon-drop:#ffc800;
+      --color-seafoam:#05cf9c;
+      --color-slate-blue:#84bbff;
+      --color-deep-space:#000000;
+      --color-white-cloud:#ffffff;
+
+      --spacing-7:7px;
+      --spacing-10:10px;
+      --spacing-13:13px;
+      --spacing-20:20px;
+      --spacing-30:30px;
+      --spacing-40:40px;
+
+      --radius-cards:30px;
+      --radius-navitems:10px;
+
+      --border-3:3px solid var(--color-deep-space);
+
+      --text-body:16px;
+      --leading-body:1.4;
+      --tracking-body:0.24px;
+
+      --text-subheading:25px;
+      --leading-subheading:1.3;
+      --tracking-subheading:0.38px;
+
+      --text-heading:45px;
+      --leading-heading:1;
+      --tracking-heading:-1.35px;
+
+      --text-display:187px;
+      --leading-display:1;
+      --tracking-display:-5.61px;
+
+      --font-gt-maru:'GT Maru', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                     "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* ===== Page canvas ===== */
+    .stApp{
+      background: var(--color-sky-blue);
+      color: var(--color-deep-space);
+    }
+
+    html, body, [class*="css"]{
+      font-family: var(--font-gt-maru) !important;
+      letter-spacing: var(--tracking-body);
+    }
+
+    /* Layout spacing */
+    .block-container{
+      padding-top: 28px;
+      padding-bottom: 40px;
+      max-width: 1200px;
+    }
+
+    /* Sidebar: keep light surface + bold outline */
+    section[data-testid="stSidebar"]{
+      background: var(--color-white-cloud) !important;
+      border-right: var(--border-3);
+    }
+    section[data-testid="stSidebar"] .block-container{
+      padding-top: 24px;
+    }
+
+    /* ===== Headings ===== */
+    .gt-display{
+      font-size: clamp(56px, 7vw, 110px); /* Streamlit-friendly display */
+      line-height: var(--leading-display);
+      letter-spacing: var(--tracking-display);
+      font-weight: 400;
+      margin: 0;
+      color: var(--color-sunshine-yellow);
+      -webkit-text-stroke: 3px var(--color-deep-space);
+      text-shadow: none;
+    }
+    .gt-title{
+      font-size: var(--text-heading);
+      line-height: var(--leading-heading);
+      letter-spacing: var(--tracking-heading);
+      font-weight: 400;
+      margin: 0 0 6px 0;
+      color: var(--color-sunshine-yellow);
+      -webkit-text-stroke: 3px var(--color-deep-space);
+    }
+    .gt-caption{
+      display:block;
+      font-size: var(--text-body);
+      line-height: var(--leading-body);
+      margin-top: 10px;
+      color: var(--color-deep-space);
+      background: var(--color-lemon-drop);
+      border: var(--border-3);
+      border-radius: var(--radius-navitems);
+      padding: 10px 13px;
+      width: fit-content;
+    }
+
+    /* ===== Cards ===== */
+    .gt-card{
+      background: var(--color-white-cloud);
+      border: var(--border-3);
+      border-radius: var(--radius-cards);
+      padding: var(--spacing-30);
+    }
+    .gt-card + .gt-card{
+      margin-top: var(--spacing-20);
+    }
+
+    /* ===== Navigation tags ===== */
+    .gt-nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap: var(--spacing-13);
+      margin: var(--spacing-20) 0 var(--spacing-20) 0;
+    }
+    .gt-tag{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: var(--spacing-7) 16px;
+      border-radius: var(--radius-navitems);
+      border: var(--border-3);
+      color: var(--color-deep-space);
+      font-size: var(--text-body);
+      line-height: 1.0;
+      user-select:none;
+      white-space: nowrap;
+    }
+
+    /* ===== Streamlit widgets: chunky outlines ===== */
+    /* Inputs */
+    div[data-baseweb="input"] > div,
+    div[data-baseweb="select"] > div,
+    div[data-baseweb="textarea"] > div{
+      border: var(--border-3) !important;
+      border-radius: var(--radius-navitems) !important;
+      background: var(--color-white-cloud) !important;
+      box-shadow: none !important;
+    }
+
+    /* Labels */
+    label, .stNumberInput label, .stTextInput label, .stSelectbox label{
+      color: var(--color-deep-space) !important;
+      font-weight: 400 !important;
+    }
+
+    /* Buttons (no distinct CTA color → use Sunshine Yellow consistently) */
+    .stButton > button{
+      border: var(--border-3) !important;
+      border-radius: var(--radius-navitems) !important;
+      background: var(--color-sunshine-yellow) !important;
+      color: var(--color-deep-space) !important;
+      font-weight: 400 !important;
+      padding: 10px 18px !important;
+      box-shadow: none !important;
+    }
+
+    /* File uploader */
+    section[data-testid="stFileUploaderDropzone"]{
+      border: var(--border-3) !important;
+      border-radius: var(--radius-cards) !important;
+      background: var(--color-white-cloud) !important;
+    }
+
+    /* Expanders */
+    details{
+      border: var(--border-3) !important;
+      border-radius: var(--radius-cards) !important;
+      background: var(--color-white-cloud) !important;
+      padding: 6px 10px;
+    }
+
+    /* Divider: bold line */
+    hr{
+      border: none;
+      border-top: 3px solid var(--color-deep-space);
+      margin: 20px 0;
+    }
+
+    /* Metrics: give them chunky card feel */
+    div[data-testid="stMetric"]{
+      background: var(--color-white-cloud);
+      border: var(--border-3);
+      border-radius: var(--radius-cards);
+      padding: 18px 18px;
+    }
+
+    /* Progress bar */
+    div[data-testid="stProgress"] > div{
+      border: var(--border-3);
+      border-radius: var(--radius-navitems);
+      background: var(--color-white-cloud);
+      overflow: hidden;
+    }
+    div[data-testid="stProgress"] div[role="progressbar"]{
+      background: var(--color-seafoam) !important;
+    }
+
+    /* Dataframe container border */
+    div[data-testid="stDataFrame"]{
+      border: var(--border-3);
+      border-radius: var(--radius-cards);
+      overflow: hidden;
+      background: var(--color-white-cloud);
+    }
+
+    /* Alerts: keep them cartoon-ish */
+    div[data-testid="stAlert"]{
+      border: var(--border-3);
+      border-radius: var(--radius-cards);
+    }
+    </style>
+    """
+    st.markdown(css, unsafe_allow_html=True)
+
+
+# =====================================================
 # Konfigurasi Halaman
 # =====================================================
 st.set_page_config(
     page_title="Prediksi Kualitas Air",
     page_icon="💧",
-    layout="wide"
+    layout="wide",
 )
+
+apply_gt_maru_theme()
 
 
 # =====================================================
@@ -69,10 +301,7 @@ def load_artifacts():
         metadata = {
             "model_name": "XGBoost + Optuna",
             "prediction_threshold": 0.5,
-            "class_mapping": {
-                "0": "Tidak Layak Minum",
-                "1": "Layak Minum"
-            }
+            "class_mapping": {"0": "Tidak Layak Minum", "1": "Layak Minum"},
         }
 
     return model, imputer, scaler, feature_order, metadata
@@ -89,7 +318,6 @@ except Exception as e:
 # =====================================================
 # Informasi Fitur dan Nilai Default
 # =====================================================
-# Nilai default dapat disesuaikan dengan statistik dataset training.
 DEFAULT_VALUES = {
     "ph": 7.0,
     "Hardness": 200.0,
@@ -134,22 +362,35 @@ def predict_water_quality(input_df: pd.DataFrame):
     threshold = float(metadata.get("prediction_threshold", 0.5))
     predicted_class = int(probability > threshold)
 
-    class_mapping = metadata.get(
-        "class_mapping",
-        {"0": "Tidak Layak Minum", "1": "Layak Minum"}
-    )
+    class_mapping = metadata.get("class_mapping", {"0": "Tidak Layak Minum", "1": "Layak Minum"})
     label = class_mapping.get(str(predicted_class), str(predicted_class))
-
     return predicted_class, label, probability, threshold
 
 
 # =====================================================
-# Tampilan Utama
+# Tampilan Utama (Gt-maru layout)
 # =====================================================
-st.title("💧 Prediksi Kualitas Air Minum")
-st.caption("Aplikasi Streamlit untuk inferensi model XGBoost + Optuna.")
+st.markdown('<h1 class="gt-display">WATER</h1>', unsafe_allow_html=True)
+st.markdown('<h2 class="gt-title">Prediksi Kualitas Air Minum</h2>', unsafe_allow_html=True)
+st.markdown(
+    '<span class="gt-caption">Aplikasi Streamlit untuk inferensi model XGBoost + Optuna.</span>',
+    unsafe_allow_html=True,
+)
+
+st.markdown(
+    """
+    <div class="gt-nav">
+      <span class="gt-tag" style="background:#05cf9c;">Input</span>
+      <span class="gt-tag" style="background:#ff8080;">Hasil</span>
+      <span class="gt-tag" style="background:#ff9400;">Batch CSV</span>
+      <span class="gt-tag" style="background:#84bbff;">Model Info</span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 with st.sidebar:
+    st.markdown('<div class="gt-card">', unsafe_allow_html=True)
     st.header("Informasi Model")
     st.write(f"**Model:** {metadata.get('model_name', 'XGBoost + Optuna')}")
     st.write(f"**Threshold:** {metadata.get('prediction_threshold', 0.5)}")
@@ -165,64 +406,68 @@ with st.sidebar:
     st.write("- minmax_scaler.joblib")
     st.write("- feature_order.json")
     st.write("- deployment_metadata.json")
+    st.markdown("</div>", unsafe_allow_html=True)
 
-st.subheader("Input Parameter Kualitas Air")
+# Section: Inputs & Results
+left, right = st.columns([1.15, 0.85], gap="large")
 
-with st.form("prediction_form"):
-    input_values = {}
+with left:
+    st.markdown('<div class="gt-card">', unsafe_allow_html=True)
+    st.subheader("Input Parameter Kualitas Air")
 
-    cols = st.columns(3)
-    for idx, feature in enumerate(feature_order):
-        with cols[idx % 3]:
-            input_values[feature] = st.number_input(
-                label=feature,
-                value=float(DEFAULT_VALUES.get(feature, 0.0)),
-                step=0.01,
-                format="%.4f",
-                help=FEATURE_DESCRIPTIONS.get(feature, "Masukkan nilai fitur sesuai dataset training.")
-            )
+    with st.form("prediction_form"):
+        input_values = {}
+        cols = st.columns(3, gap="medium")
+        for idx, feature in enumerate(feature_order):
+            with cols[idx % 3]:
+                input_values[feature] = st.number_input(
+                    label=feature,
+                    value=float(DEFAULT_VALUES.get(feature, 0.0)),
+                    step=0.01,
+                    format="%.4f",
+                    help=FEATURE_DESCRIPTIONS.get(feature, "Masukkan nilai fitur sesuai dataset training."),
+                )
 
-    submitted = st.form_submit_button("Prediksi Kualitas Air", type="primary")
+        submitted = st.form_submit_button("Prediksi Kualitas Air")
 
-if submitted:
-    input_df = build_input_dataframe(input_values, feature_order)
-    predicted_class, label, probability, threshold = predict_water_quality(input_df)
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    st.divider()
+with right:
+    st.markdown('<div class="gt-card">', unsafe_allow_html=True)
     st.subheader("Hasil Prediksi")
 
-    col_result, col_prob = st.columns([1, 1])
+    if submitted:
+        input_df = build_input_dataframe(input_values, feature_order)
+        predicted_class, label, probability, threshold = predict_water_quality(input_df)
 
-    with col_result:
         if predicted_class == 1:
             st.success(f"Prediksi: {label}")
         else:
             st.error(f"Prediksi: {label}")
 
-    with col_prob:
         st.metric("Probabilitas Layak Minum", f"{probability:.4f}")
         st.progress(min(max(probability, 0.0), 1.0))
 
-    with st.expander("Lihat detail input dan preprocessing"):
-        st.write("**Input sesuai feature order:**")
-        st.dataframe(input_df, use_container_width=True)
-        st.write(f"Threshold klasifikasi: `{threshold}`")
-        st.write("Aturan: probabilitas > threshold diklasifikasikan sebagai `Layak Minum`.")
+        with st.expander("Lihat detail input dan preprocessing"):
+            st.write("**Input sesuai feature order:**")
+            st.dataframe(input_df, use_container_width=True)
+            st.write(f"Threshold klasifikasi: `{threshold}`")
+            st.write("Aturan: probabilitas > threshold diklasifikasikan sebagai `Layak Minum`.")
 
-    with st.expander("Catatan Interpretasi"):
-        st.write(
-            "Hasil prediksi ini merupakan output model machine learning berdasarkan pola pada dataset training. "
-            "Hasil aplikasi tidak menggantikan pengujian laboratorium resmi untuk menentukan kelayakan air minum."
-        )
+        with st.expander("Catatan Interpretasi"):
+            st.write(
+                "Hasil prediksi ini merupakan output model machine learning berdasarkan pola pada dataset training. "
+                "Hasil aplikasi tidak menggantikan pengujian laboratorium resmi untuk menentukan kelayakan air minum."
+            )
+    else:
+        st.info("Isi parameter kualitas air, lalu klik tombol prediksi.")
 
-else:
-    st.info("Isi parameter kualitas air, lalu klik tombol prediksi.")
-
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # =====================================================
-# Upload CSV untuk Prediksi Batch
+# Upload CSV untuk Prediksi Batch (Card)
 # =====================================================
-st.divider()
+st.markdown('<div class="gt-card">', unsafe_allow_html=True)
 st.subheader("Prediksi Batch dari CSV")
 st.write("Upload file CSV yang memiliki kolom sesuai `feature_order.json`.")
 
@@ -245,10 +490,7 @@ if uploaded_file is not None:
             threshold = float(metadata.get("prediction_threshold", 0.5))
             predictions = (probabilities > threshold).astype(int)
 
-            class_mapping = metadata.get(
-                "class_mapping",
-                {"0": "Tidak Layak Minum", "1": "Layak Minum"}
-            )
+            class_mapping = metadata.get("class_mapping", {"0": "Tidak Layak Minum", "1": "Layak Minum"})
 
             result_df = batch_df.copy()
             result_df["probabilitas_layak_minum"] = probabilities
@@ -263,9 +505,11 @@ if uploaded_file is not None:
                 label="Download Hasil Prediksi CSV",
                 data=csv_result,
                 file_name="hasil_prediksi_kualitas_air.csv",
-                mime="text/csv"
+                mime="text/csv",
             )
 
     except Exception as e:
         st.error("Gagal memproses file CSV.")
         st.exception(e)
+
+st.markdown("</div>", unsafe_allow_html=True)
