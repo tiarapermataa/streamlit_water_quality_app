@@ -856,6 +856,23 @@ def render_dashboard():
     acc_df = metrics_df[["display_name", "accuracy"]].set_index("display_name")
     st.bar_chart(acc_df)
 
+    st.markdown("### Confusion Matrix (Semua Model)")
+    for model_key, model_info in registry.get("models", {}).items():
+        cm = model_info.get("confusion_matrix", {})
+        st.markdown(f"**{model_info.get('display_name', model_key)}**")
+        if cm:
+            cm_df = pd.DataFrame(
+                [
+                    [cm.get("tn", 0), cm.get("fp", 0)],
+                    [cm.get("fn", 0), cm.get("tp", 0)],
+                ],
+                index=["Actual: Tidak Layak", "Actual: Layak"],
+                columns=["Pred: Tidak Layak", "Pred: Layak"],
+            )
+            st.dataframe(cm_df, use_container_width=True)
+        else:
+            st.info("Confusion matrix belum tersedia untuk model ini.")
+
 
 # =====================================================
 # Halaman Prediksi
