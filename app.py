@@ -569,6 +569,26 @@ def get_available_models():
     }
 
 
+# === Tambahan helper untuk Home/Dashboard ===
+@st.cache_data
+def load_deployment_metadata():
+    metadata_path = find_artifact("deployment_metadata.json")
+    with open(metadata_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+@st.cache_data
+def load_input_schema():
+    schema_path = find_artifact("input_schema.csv")
+    return pd.read_csv(schema_path)
+
+
+@st.cache_data
+def load_metrics_registry():
+    metrics_path = find_artifact("model_metrics_registry.csv")
+    return pd.read_csv(metrics_path)
+
+
 try:
     imputer, scaler, feature_order = load_shared_artifacts()
     registry = load_model_registry()
@@ -645,26 +665,13 @@ def predict_quality(input_df: pd.DataFrame, model, best_iteration=None):
 
 
 # =====================================================
-# Tampilan Utama
-# =====================================================
-st.markdown(
-    """
-    <section class="hero">
-        <span class="eyebrow">Prediksi Kualitas Air</span>
-        <h1>Masukkan Parameter, Dapatkan Hasil</h1>
-        <p>
-        Halaman ini difokuskan untuk prediksi tunggal secepat mungkin.
-        Isi nilai parameter di kiri, lalu lihat hasil prediksi langsung di kanan.
-        </p>
-    </section>
-    """,
-    unsafe_allow_html=True,
-)
-
-# =====================================================
-# Sidebar: Model Selection
+# Sidebar: Navigasi & Model Selection
 # =====================================================
 with st.sidebar:
+    st.markdown("## Navigasi")
+    page = st.radio("Pilih Halaman", ["Home", "Dashboard", "Prediksi"])
+    st.divider()
+
     st.markdown("### 📊 Pilih Model")
     st.markdown(
         '<p class="section-lead">Terdapat 6 model tersedia dengan kombinasi split data dan metode tuning.</p>',
@@ -730,137 +737,250 @@ with st.sidebar:
         st.write(f"- models/{selected_model_key}.json")
         st.write(f"- models/{selected_model_key}.joblib")
 
+
 # Load selected model
 model_json_path = find_artifact(selected_model_info["model_json"])
 selected_model = load_xgb_model(model_json_path)
 best_iteration = selected_model_info.get("best_iteration")
 
-input_col, result_col = st.columns([1.2, 0.8], gap="large")
 
-submitted = False
-input_df = None
-predicted_class = None
-label = ""
-probability = 0.0
-threshold = float(registry.get("prediction_threshold", 0.5))
+# =====================================================
+# Halaman Home
+# =====================================================
+def render_home():
+    metadata = load_deployment_metadata()
+    schema_df = load_input_schema()
 
-with input_col:
-    st.subheader("1) Input Parameter")
     st.markdown(
-        '<p class="section-lead">Isi nilai parameter berikut sesuai kondisi sampel air yang ingin diprediksi.</p>',
+        f"""
+        <section class="hero">
+            <span class="eyebrow">{metadata.get("project_name", "Water Potability Prediction")}</span>
+            <h1>Ringkasan Proyek</h1>
+            <p>
+            Model memprediksi kelayakan air minum berdasarkan 9 parameter kimia.
+            Target klasifikasi: <strong>{metadata.get("target_column", "Potability")}</strong>.
+            </p>
+        </section>
+        """,
         unsafe_allow_html=True,
     )
 
-    with st.form("prediction_form"):
-        input_values = {}
-        cols = st.columns(3, gap="medium")
-        for idx, feature in enumerate(feature_order):
-            with cols[idx % 3]:
-                input_values[feature] = st.number_input(
-                    label=feature,
-                    value=float(DEFAULT_VALUES.get(feature, 0.0)),
-                    step=0.01,
-                    format="%.4f",
-                    help=FEATURE_DESCRIPTIONS.get(feature, "Masukkan nilai fitur sesuai dataset training."),
-                )
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Jumlah Model", metadata.get("available_model_count", 0))
+    col2.metric("Threshold", metadata.get("prediction_threshold", 0.5))
+    col3.metric("Random State", metadata.get("random_state", 0))
 
-        submitted = st.form_submit_button("Prediksi Sekarang")
+    st.markdown("### Versi Library")
+    versions = metadata.get("library_versions", {})
+    st.write(f"- Python: `{versions.get('python','-')}`")
+    st.write(f"- NumPy: `{versions.get('numpy','-')}`")
+    st.write(f"- Pandas: `{versions.get('pandas','-')}`")
+    st.write(f"- Scikit-learn: `{versions.get('sklearn','-')}`")
+    st.write(f"- XGBoost: `{versions.get('xgboost','-')}`")
 
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("### Fitur Input & Statistik")
+    st.dataframe(schema_df, use_container_width=True)
 
-with result_col:
-    st.subheader("2) Hasil Prediksi")
+    st.markdown("### Kelas Output")
+    class_mapping = metadata.get("class_mapping", {})
+    st.write(f"- 0 → **{class_mapping.get('0', 'Tidak Layak Minum')}**")
+    st.write(f"- 1 → **{class_mapping.get('1', 'Layak Minum')}**")
 
-    if submitted:
-        input_df = build_input_df(input_values, feature_order)
-        predicted_class, label, probability, threshold = predict_quality(
-            input_df, 
-            selected_model, 
-            best_iteration
+    st.caption(f"Exported at: {metadata.get('exported_at', '-')}")
+
+
+# =====================================================
+# Halaman Dashboard
+# =====================================================
+def render_dashboard():
+    metrics_df = load_metrics_registry()
+
+    st.markdown(
+        """
+        <section class="hero">
+            <span class="eyebrow">Dashboard</span>
+            <h1>Performa Model</h1>
+            <p>
+            Ringkasan metrik dari semua model yang tersedia di registry.
+            </p>
+        </section>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Ringkasan best model (berdasarkan F1)
+    best_row = metrics_df.sort_values("f1_score", ascending=False).iloc[0]
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Best Model (F1)", best_row["display_name"])
+    c2.metric("F1-Score", f"{best_row['f1_score']:.4f}")
+    c3.metric("Accuracy", f"{best_row['accuracy']:.4f}")
+
+    st.markdown("### Tabel Metrik Semua Model")
+    st.dataframe(metrics_df, use_container_width=True)
+
+    st.markdown("### Perbandingan F1-Score")
+    chart_df = metrics_df[["display_name", "f1_score"]].set_index("display_name")
+    st.bar_chart(chart_df)
+
+    st.markdown("### Perbandingan Accuracy")
+    acc_df = metrics_df[["display_name", "accuracy"]].set_index("display_name")
+    st.bar_chart(acc_df)
+
+
+# =====================================================
+# Halaman Prediksi
+# =====================================================
+def render_prediction():
+    st.markdown(
+        """
+        <section class="hero">
+            <span class="eyebrow">Prediksi Kualitas Air</span>
+            <h1>Masukkan Parameter, Dapatkan Hasil</h1>
+            <p>
+            Halaman ini difokuskan untuk prediksi tunggal secepat mungkin.
+            Isi nilai parameter di kiri, lalu lihat hasil prediksi di kanan.
+            </p>
+        </section>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    input_col, result_col = st.columns([1.2, 0.8], gap="large")
+
+    submitted = False
+    input_df = None
+    predicted_class = None
+    label = ""
+    probability = 0.0
+    threshold = float(registry.get("prediction_threshold", 0.5))
+
+    with input_col:
+        st.subheader("1) Input Parameter")
+        st.markdown(
+            '<p class="section-lead">Isi nilai parameter berikut sesuai kondisi sampel air yang ingin diprediksi.</p>',
+            unsafe_allow_html=True,
         )
 
-        if predicted_class == 1:
-            st.success(f"Prediksi: {label}")
-        else:
-            st.error(f"Prediksi: {label}")
+        with st.form("prediction_form"):
+            input_values = {}
+            cols = st.columns(3, gap="medium")
+            for idx, feature in enumerate(feature_order):
+                with cols[idx % 3]:
+                    input_values[feature] = st.number_input(
+                        label=feature,
+                        value=float(DEFAULT_VALUES.get(feature, 0.0)),
+                        step=0.01,
+                        format="%.4f",
+                        help=FEATURE_DESCRIPTIONS.get(feature, "Masukkan nilai fitur sesuai dataset training."),
+                    )
 
-        st.metric("Probabilitas layak minum", f"{probability:.4f}")
-        st.progress(min(max(probability, 0.0), 1.0))
+            submitted = st.form_submit_button("Prediksi Sekarang")
 
-        d1, d2 = st.columns(2, gap="small")
-        with d1:
-            st.markdown(
-                f"""
-                <div class="summary-card">
-                    <strong>Threshold</strong>
-                    <span>{threshold}</span>
-                </div>
-                """,
-                unsafe_allow_html=True,
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    with result_col:
+        st.subheader("2) Hasil Prediksi")
+
+        if submitted:
+            input_df = build_input_df(input_values, feature_order)
+            predicted_class, label, probability, threshold = predict_quality(
+                input_df,
+                selected_model,
+                best_iteration
             )
-        with d2:
-            st.markdown(
-                f"""
-                <div class="summary-card">
-                    <strong>Label</strong>
-                    <span>{label}</span>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-    else:
-        st.info("Belum ada hasil. Isi parameter lalu klik **Prediksi Sekarang**.")
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
-if submitted and input_df is not None:
-    with st.expander("Lihat detail input dan preprocessing"):
-        st.write("**Input sesuai feature order:**")
-        st.dataframe(input_df, use_container_width=True)
-        st.write(f"Threshold klasifikasi: `{threshold}`")
-        st.write("Aturan: probabilitas > threshold diklasifikasikan sebagai `Layak Minum`.")
-
-with st.expander("Prediksi batch CSV (opsional)"):
-    st.markdown(
-        '<p class="section-lead">Upload CSV hanya jika Anda ingin prediksi banyak data sekaligus.</p>',
-        unsafe_allow_html=True,
-    )
-    uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
-
-    if uploaded_file is not None:
-        try:
-            batch_df = pd.read_csv(uploaded_file)
-            missing_cols = [col for col in feature_order if col not in batch_df.columns]
-
-            if missing_cols:
-                st.error(f"Kolom berikut belum ada pada CSV: {missing_cols}")
+            if predicted_class == 1:
+                st.success(f"Prediksi: {label}")
             else:
-                batch_input = batch_df[feature_order].copy()
-                imputed = imputer.transform(batch_input)
-                scaled = scaler.transform(imputed)
-                dmatrix = xgb.DMatrix(scaled, feature_names=feature_order)
+                st.error(f"Prediksi: {label}")
 
-                probabilities = predict_xgb_booster(selected_model, dmatrix, best_iteration)
-                threshold_batch = float(registry.get("prediction_threshold", 0.5))
-                predictions = (probabilities > threshold_batch).astype(int)
-                class_mapping = registry.get("class_mapping", {"0": "Tidak Layak Minum", "1": "Layak Minum"})
+            st.metric("Probabilitas layak minum", f"{probability:.4f}")
+            st.progress(min(max(probability, 0.0), 1.0))
 
-                result_df = batch_df.copy()
-                result_df["probabilitas_layak_minum"] = probabilities
-                result_df["prediksi_kelas"] = predictions
-                result_df["prediksi_label"] = [class_mapping.get(str(pred), str(pred)) for pred in predictions]
-
-                st.success("Prediksi batch berhasil diproses.")
-                st.dataframe(result_df, use_container_width=True)
-
-                csv_result = result_df.to_csv(index=False).encode("utf-8")
-                st.download_button(
-                    label="Download Hasil Prediksi CSV",
-                    data=csv_result,
-                    file_name="hasil_prediksi_kualitas_air.csv",
-                    mime="text/csv",
+            d1, d2 = st.columns(2, gap="small")
+            with d1:
+                st.markdown(
+                    f"""
+                    <div class="summary-card">
+                        <strong>Threshold</strong>
+                        <span>{threshold}</span>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
                 )
-        except Exception as e:
-            st.error("Gagal memproses file CSV.")
-            st.exception(e)
-            
+            with d2:
+                st.markdown(
+                    f"""
+                    <div class="summary-card">
+                        <strong>Label</strong>
+                        <span>{label}</span>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+        else:
+            st.info("Belum ada hasil. Isi parameter lalu klik **Prediksi Sekarang**.")
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    if submitted and input_df is not None:
+        with st.expander("Lihat detail input dan preprocessing"):
+            st.write("**Input sesuai feature order:**")
+            st.dataframe(input_df, use_container_width=True)
+            st.write(f"Threshold klasifikasi: `{threshold}`")
+            st.write("Aturan: probabilitas > threshold diklasifikasikan sebagai `Layak Minum`.")
+
+    with st.expander("Prediksi batch CSV (opsional)"):
+        st.markdown(
+            '<p class="section-lead">Upload CSV hanya jika Anda ingin prediksi banyak data sekaligus.</p>',
+            unsafe_allow_html=True,
+        )
+        uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
+
+        if uploaded_file is not None:
+            try:
+                batch_df = pd.read_csv(uploaded_file)
+                missing_cols = [col for col in feature_order if col not in batch_df.columns]
+
+                if missing_cols:
+                    st.error(f"Kolom berikut belum ada pada CSV: {missing_cols}")
+                else:
+                    batch_input = batch_df[feature_order].copy()
+                    imputed = imputer.transform(batch_input)
+                    scaled = scaler.transform(imputed)
+                    dmatrix = xgb.DMatrix(scaled, feature_names=feature_order)
+
+                    probabilities = predict_xgb_booster(selected_model, dmatrix, best_iteration)
+                    threshold_batch = float(registry.get("prediction_threshold", 0.5))
+                    predictions = (probabilities > threshold_batch).astype(int)
+                    class_mapping = registry.get("class_mapping", {"0": "Tidak Layak Minum", "1": "Layak Minum"})
+
+                    result_df = batch_df.copy()
+                    result_df["probabilitas_layak_minum"] = probabilities
+                    result_df["prediksi_kelas"] = predictions
+                    result_df["prediksi_label"] = [class_mapping.get(str(pred), str(pred)) for pred in predictions]
+
+                    st.success("Prediksi batch berhasil diproses.")
+                    st.dataframe(result_df, use_container_width=True)
+
+                    csv_result = result_df.to_csv(index=False).encode("utf-8")
+                    st.download_button(
+                        label="Download Hasil Prediksi CSV",
+                        data=csv_result,
+                        file_name="hasil_prediksi_kualitas_air.csv",
+                        mime="text/csv",
+                    )
+            except Exception as e:
+                st.error("Gagal memproses file CSV.")
+                st.exception(e)
+
+
+# =====================================================
+# Routing Halaman
+# =====================================================
+if page == "Home":
+    render_home()
+elif page == "Dashboard":
+    render_dashboard()
+elif page == "Prediksi":
+    render_prediction()
