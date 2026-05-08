@@ -56,16 +56,43 @@ def apply_vercel_theme():
             padding-bottom: 64px;
         }
 
-        .stApp header,
-        .stApp [data-testid="stToolbar"],
-        .stApp [data-testid="stDecoration"],
-        .stApp [data-testid="stStatusWidget"]{
+        /* Keep Streamlit toolbar and controls visible */
+        .stApp [data-testid="stDecoration"]{
             display:none !important;
+        }
+        
+        .stApp header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--line);
+            visibility: visible !important;
+            display: flex !important;
+        }
+        
+        .stApp [data-testid="stToolbar"] {
+            visibility: visible !important;
+            display: flex !important;
+        }
+        
+        .stApp [data-testid="stToolbar"] > div {
+            visibility: visible !important;
+            display: flex !important;
+        }
+        
+        .stApp [data-testid="stToolbar"] button {
+            visibility: visible !important;
+            display: inline-flex !important;
+            opacity: 1 !important;
         }
 
         section[data-testid="stSidebar"]{
             background: var(--surface) !important;
             box-shadow: 0 0 0 1px var(--line);
+            visibility: visible !important;
+            display: block !important;
+        }
+        
+        section[data-testid="stSidebar"] > div {
+            visibility: visible !important;
         }
 
         .hero{
@@ -464,7 +491,6 @@ st.set_page_config(
     page_title="Prediksi Kualitas Air",
     page_icon="💧",
     layout="wide",
-    initial_sidebar_state="expanded",
 )
 
 apply_vercel_theme()
