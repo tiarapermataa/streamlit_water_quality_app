@@ -14,6 +14,7 @@ import xgboost as xgb
 def apply_vercel_theme():
         css = """
         <style>
+        /* Default = light */
         :root{
             --bg: #ffffff;
             --surface: #ffffff;
@@ -35,11 +36,40 @@ def apply_vercel_theme():
             --max: 1200px;
         }
 
+        /* Streamlit theme detection */
+        html[data-theme="dark"], 
+        html[data-theme="dark"] :root {
+            --bg: #0f0f0f;
+            --surface: #1a1a1a;
+            --text: #ececec;
+            --muted: #b0b0b0;
+            --line: rgba(255,255,255,0.08);
+            --line-soft: rgba(255,255,255,0.06);
+            --shadow-soft: rgba(0,0,0,0.3);
+            --badge-bg: #1e3a5f;
+            --badge-text: #6da8ff;
+        }
+
+        /* Fallback jika browser pakai dark mode tapi Streamlit tidak set data-theme */
+        @media (prefers-color-scheme: dark){
+            :root{
+                --bg: #0f0f0f;
+                --surface: #1a1a1a;
+                --text: #ececec;
+                --muted: #b0b0b0;
+                --line: rgba(255,255,255,0.08);
+                --line-soft: rgba(255,255,255,0.06);
+                --shadow-soft: rgba(0,0,0,0.3);
+                --badge-bg: #1e3a5f;
+                --badge-text: #6da8ff;
+            }
+        }
+
         .stApp{
             background:
                 radial-gradient(circle at top left, rgba(10,114,239,0.06), transparent 28%),
                 radial-gradient(circle at top right, rgba(222,29,141,0.05), transparent 22%),
-                linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+                linear-gradient(180deg, var(--bg) 0%, var(--bg) 100%);
             color: var(--text);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
