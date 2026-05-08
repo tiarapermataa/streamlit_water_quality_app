@@ -1,0 +1,267 @@
+{
+    "registry_version": 2,
+    "target_column": "Potability",
+    "feature_order_file": "feature_order.json",
+    "imputer_file": "feature_imputer.joblib",
+    "scaler_file": "minmax_scaler.joblib",
+    "input_schema_file": "input_schema.csv",
+    "class_mapping": {
+        "0": "Tidak Layak Minum",
+        "1": "Layak Minum"
+    },
+    "prediction_note": "Model diload sebagai xgb.Booster. Jika ingin memakai best_iteration secara eksplisit, gunakan iteration_range=(0, best_iteration + 1) saat predict.",
+    "models": {
+        "baseline_split_60_40": {
+            "key": "baseline_split_60_40",
+            "display_name": "Baseline Split 60:40",
+            "model_family": "XGBoost",
+            "model_type": "baseline",
+            "split": "60:40",
+            "model_json": "models/baseline_split_60_40.json",
+            "model_joblib": "models/baseline_split_60_40.joblib",
+            "prediction_threshold": 0.5,
+            "best_iteration": 829,
+            "best_score": 0.40523695077357164,
+            "training_time_seconds": 5.54834508895874,
+            "train_shape": [
+                2397,
+                9
+            ],
+            "test_shape": [
+                1599,
+                9
+            ],
+            "params": {
+                "objective": "binary:logistic",
+                "eval_metric": "logloss",
+                "max_depth": 6,
+                "eta": 0.03,
+                "subsample": 1,
+                "colsample_bytree": 1,
+                "lambda": 1,
+                "alpha": 0.1,
+                "gamma": 0.1,
+                "min_child_weight": 1,
+                "seed": 42,
+                "tree_method": "hist"
+            },
+            "metrics": {
+                "accuracy": 0.8148843026891808,
+                "precision": 0.8187579214195184,
+                "recall": 0.8085106382978723,
+                "f1_score": 0.8136020151133502
+            }
+        },
+        "baseline_split_70_30": {
+            "key": "baseline_split_70_30",
+            "display_name": "Baseline Split 70:30",
+            "model_family": "XGBoost",
+            "model_type": "baseline",
+            "split": "70:30",
+            "model_json": "models/baseline_split_70_30.json",
+            "model_joblib": "models/baseline_split_70_30.joblib",
+            "prediction_threshold": 0.5,
+            "best_iteration": 881,
+            "best_score": 0.3743465771053718,
+            "training_time_seconds": 2.7950050830841064,
+            "train_shape": [
+                2797,
+                9
+            ],
+            "test_shape": [
+                1199,
+                9
+            ],
+            "params": {
+                "objective": "binary:logistic",
+                "eval_metric": "logloss",
+                "max_depth": 6,
+                "eta": 0.03,
+                "subsample": 1,
+                "colsample_bytree": 1,
+                "lambda": 1,
+                "alpha": 0.1,
+                "gamma": 0.1,
+                "min_child_weight": 1,
+                "seed": 42,
+                "tree_method": "hist"
+            },
+            "metrics": {
+                "accuracy": 0.8323603002502085,
+                "precision": 0.8454861111111112,
+                "recall": 0.8130217028380634,
+                "f1_score": 0.828936170212766
+            }
+        },
+        "baseline_split_80_20": {
+            "key": "baseline_split_80_20",
+            "display_name": "Baseline Split 80:20",
+            "model_family": "XGBoost",
+            "model_type": "baseline",
+            "split": "80:20",
+            "model_json": "models/baseline_split_80_20.json",
+            "model_joblib": "models/baseline_split_80_20.joblib",
+            "prediction_threshold": 0.5,
+            "best_iteration": 957,
+            "best_score": 0.3666606096221949,
+            "training_time_seconds": 2.719871997833252,
+            "train_shape": [
+                3196,
+                9
+            ],
+            "test_shape": [
+                800,
+                9
+            ],
+            "params": {
+                "objective": "binary:logistic",
+                "eval_metric": "logloss",
+                "max_depth": 6,
+                "eta": 0.03,
+                "subsample": 1,
+                "colsample_bytree": 1,
+                "lambda": 1,
+                "alpha": 0.1,
+                "gamma": 0.1,
+                "min_child_weight": 1,
+                "seed": 42,
+                "tree_method": "hist"
+            },
+            "metrics": {
+                "accuracy": 0.84375,
+                "precision": 0.8647214854111406,
+                "recall": 0.815,
+                "f1_score": 0.8391248391248392
+            }
+        },
+        "optuna_split_60_40": {
+            "key": "optuna_split_60_40",
+            "display_name": "Optuna Split 60:40",
+            "model_family": "XGBoost",
+            "model_type": "optuna",
+            "split": "60:40",
+            "model_json": "models/optuna_split_60_40.json",
+            "model_joblib": "models/optuna_split_60_40.joblib",
+            "prediction_threshold": 0.5,
+            "best_iteration": 743,
+            "best_score": 0.37020021603571446,
+            "training_time_seconds": 4.045823812484741,
+            "train_shape": [
+                2397,
+                9
+            ],
+            "test_shape": [
+                1599,
+                9
+            ],
+            "params": {
+                "max_depth": 10,
+                "eta": 0.022941102115882392,
+                "subsample": 0.6559698269810685,
+                "colsample_bytree": 0.6722927592030148,
+                "lambda": 1.7191065135566566,
+                "alpha": 0.004154617114968086,
+                "gamma": 0.20660928483465638,
+                "min_child_weight": 1,
+                "objective": "binary:logistic",
+                "eval_metric": "logloss",
+                "seed": 42,
+                "verbosity": 0,
+                "tree_method": "hist"
+            },
+            "metrics": {
+                "accuracy": 0.8280175109443402,
+                "precision": 0.8299748110831234,
+                "recall": 0.8247809762202754,
+                "f1_score": 0.8273697426239799
+            },
+            "best_cv_logloss": 0.4130560275850207
+        },
+        "optuna_split_70_30": {
+            "key": "optuna_split_70_30",
+            "display_name": "Optuna Split 70:30",
+            "model_family": "XGBoost",
+            "model_type": "optuna",
+            "split": "70:30",
+            "model_json": "models/optuna_split_70_30.json",
+            "model_joblib": "models/optuna_split_70_30.joblib",
+            "prediction_threshold": 0.5,
+            "best_iteration": 3586,
+            "best_score": 0.3674759653272042,
+            "training_time_seconds": 11.406485080718994,
+            "train_shape": [
+                2797,
+                9
+            ],
+            "test_shape": [
+                1199,
+                9
+            ],
+            "params": {
+                "max_depth": 5,
+                "eta": 0.020857790519383697,
+                "subsample": 0.6990700215584946,
+                "colsample_bytree": 0.8574671836428648,
+                "lambda": 8.077516410846028,
+                "alpha": 0.0075226381710545385,
+                "gamma": 0.05570604555042946,
+                "min_child_weight": 1,
+                "objective": "binary:logistic",
+                "eval_metric": "logloss",
+                "seed": 42,
+                "verbosity": 0,
+                "tree_method": "hist"
+            },
+            "metrics": {
+                "accuracy": 0.8498748957464554,
+                "precision": 0.8605851979345955,
+                "recall": 0.8347245409015025,
+                "f1_score": 0.847457627118644
+            },
+            "best_cv_logloss": 0.4055747338398388
+        },
+        "optuna_split_80_20": {
+            "key": "optuna_split_80_20",
+            "display_name": "Optuna Split 80:20",
+            "model_family": "XGBoost",
+            "model_type": "optuna",
+            "split": "80:20",
+            "model_json": "models/optuna_split_80_20.json",
+            "model_joblib": "models/optuna_split_80_20.joblib",
+            "prediction_threshold": 0.5,
+            "best_iteration": 1675,
+            "best_score": 0.3124573294899892,
+            "training_time_seconds": 5.3749237060546875,
+            "train_shape": [
+                3196,
+                9
+            ],
+            "test_shape": [
+                800,
+                9
+            ],
+            "params": {
+                "max_depth": 12,
+                "eta": 0.019040999987342693,
+                "subsample": 0.7489025047107206,
+                "colsample_bytree": 0.5539243911858696,
+                "lambda": 3.0660191532033276,
+                "alpha": 1.470462779012154e-07,
+                "gamma": 0.15077537775474464,
+                "min_child_weight": 1,
+                "objective": "binary:logistic",
+                "eval_metric": "logloss",
+                "seed": 42,
+                "verbosity": 0,
+                "tree_method": "hist"
+            },
+            "metrics": {
+                "accuracy": 0.85125,
+                "precision": 0.8668407310704961,
+                "recall": 0.83,
+                "f1_score": 0.8480204342273308
+            },
+            "best_cv_logloss": 0.33826755406127124
+        }
+    }
+}

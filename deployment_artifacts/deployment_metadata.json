@@ -1,5 +1,5 @@
 {
-    "model_name": "XGBoost + Optuna",
+    "project_name": "Water Potability Prediction",
     "target_column": "Potability",
     "feature_order": [
         "ph",
@@ -18,22 +18,29 @@
     },
     "prediction_threshold": 0.5,
     "random_state": 42,
-    "final_split": "80:20",
-    "best_params": {
-        "max_depth": 9,
-        "eta": 0.024650928916725923,
-        "subsample": 0.7648614956393701,
-        "colsample_bytree": 0.5343459258639497,
-        "lambda": 0.45480582994977503,
-        "alpha": 0.0156415306931996,
-        "gamma": 0.1477121963446753,
-        "min_child_weight": 1,
-        "objective": "binary:logistic",
-        "eval_metric": "logloss",
-        "seed": 42,
-        "verbosity": 0,
-        "tree_method": "hist",
-        "nthread": -1
+    "available_model_count": 6,
+    "available_models": [
+        "baseline_split_60_40",
+        "baseline_split_70_30",
+        "baseline_split_80_20",
+        "optuna_split_60_40",
+        "optuna_split_70_30",
+        "optuna_split_80_20"
+    ],
+    "registry_file": "model_registry.json",
+    "metrics_file": "model_metrics_registry.csv",
+    "input_schema_file": "input_schema.csv",
+    "optuna_trial_files": [
+        "optuna_trials/optuna_trials_split_80_20.csv",
+        "optuna_trials/optuna_trials_split_70_30.csv",
+        "optuna_trials/optuna_trials_split_60_40.csv"
+    ],
+    "library_versions": {
+        "python": "3.12.13 (main, Mar  4 2026, 09:23:07) [GCC 11.4.0]",
+        "numpy": "2.0.2",
+        "pandas": "2.2.2",
+        "sklearn": "1.6.1",
+        "xgboost": "3.2.0"
     },
-    "exported_at": "2026-05-05 18:11:08"
+    "exported_at": "2026-05-06 08:19:15"
 }
