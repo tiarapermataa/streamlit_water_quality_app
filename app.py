@@ -857,21 +857,38 @@ def render_dashboard():
     st.bar_chart(acc_df)
 
     st.markdown("### Confusion Matrix (Semua Model)")
+
+    def render_cm_heatmap(title: str, cm: dict):
+        cm_df = pd.DataFrame(
+            [
+                [cm.get("tn", 0), cm.get("fp", 0)],
+                [cm.get("fn", 0), cm.get("tp", 0)],
+            ],
+            index=["Actual: Tidak Layak", "Actual: Layak"],
+            columns=["Pred: Tidak Layak", "Pred: Layak"],
+        )
+
+        try:
+            import matplotlib.pyplot as plt
+            import seaborn as sns
+
+            fig, ax = plt.subplots(figsize=(4, 3))
+            sns.heatmap(cm_df, annot=True, fmt="d", cmap="Blues", cbar=False, ax=ax)
+            ax.set_title(title)
+            ax.set_xlabel("Prediksi")
+            ax.set_ylabel("Aktual")
+            st.pyplot(fig)
+        except Exception:
+            st.markdown(f"**{title}**")
+            st.dataframe(cm_df, use_container_width=True)
+
     for model_key, model_info in registry.get("models", {}).items():
         cm = model_info.get("confusion_matrix", {})
-        st.markdown(f"**{model_info.get('display_name', model_key)}**")
+        title = model_info.get("display_name", model_key)
         if cm:
-            cm_df = pd.DataFrame(
-                [
-                    [cm.get("tn", 0), cm.get("fp", 0)],
-                    [cm.get("fn", 0), cm.get("tp", 0)],
-                ],
-                index=["Actual: Tidak Layak", "Actual: Layak"],
-                columns=["Pred: Tidak Layak", "Pred: Layak"],
-            )
-            st.dataframe(cm_df, use_container_width=True)
+            render_cm_heatmap(title, cm)
         else:
-            st.info("Confusion matrix belum tersedia untuk model ini.")
+            st.info(f"Confusion matrix belum tersedia untuk {title}.")
 
 
 # =====================================================
