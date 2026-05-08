@@ -21,8 +21,8 @@
             "model_joblib": "models/baseline_split_60_40.joblib",
             "prediction_threshold": 0.5,
             "best_iteration": 829,
-            "best_score": 0.40523695077357164,
-            "training_time_seconds": 5.54834508895874,
+            "best_score": 0.405236951260492,
+            "training_time_seconds": 1.381767988204956,
             "train_shape": [
                 2397,
                 9
@@ -50,6 +50,13 @@
                 "precision": 0.8187579214195184,
                 "recall": 0.8085106382978723,
                 "f1_score": 0.8136020151133502
+            },
+            "confusion_matrix": {
+                "tp": 646,
+                "fp": 143,
+                "fn": 153,
+                "tn": 657,
+                "total": 1599
             }
         },
         "baseline_split_70_30": {
@@ -62,8 +69,8 @@
             "model_joblib": "models/baseline_split_70_30.joblib",
             "prediction_threshold": 0.5,
             "best_iteration": 881,
-            "best_score": 0.3743465771053718,
-            "training_time_seconds": 2.7950050830841064,
+            "best_score": 0.37434657668126664,
+            "training_time_seconds": 1.4229097366333008,
             "train_shape": [
                 2797,
                 9
@@ -91,6 +98,13 @@
                 "precision": 0.8454861111111112,
                 "recall": 0.8130217028380634,
                 "f1_score": 0.828936170212766
+            },
+            "confusion_matrix": {
+                "tp": 487,
+                "fp": 89,
+                "fn": 112,
+                "tn": 511,
+                "total": 1199
             }
         },
         "baseline_split_80_20": {
@@ -103,8 +117,8 @@
             "model_joblib": "models/baseline_split_80_20.joblib",
             "prediction_threshold": 0.5,
             "best_iteration": 957,
-            "best_score": 0.3666606096221949,
-            "training_time_seconds": 2.719871997833252,
+            "best_score": 0.3666606085069361,
+            "training_time_seconds": 1.4437494277954102,
             "train_shape": [
                 3196,
                 9
@@ -132,6 +146,13 @@
                 "precision": 0.8647214854111406,
                 "recall": 0.815,
                 "f1_score": 0.8391248391248392
+            },
+            "confusion_matrix": {
+                "tp": 326,
+                "fp": 51,
+                "fn": 74,
+                "tn": 349,
+                "total": 800
             }
         },
         "optuna_split_60_40": {
@@ -143,9 +164,9 @@
             "model_json": "models/optuna_split_60_40.json",
             "model_joblib": "models/optuna_split_60_40.joblib",
             "prediction_threshold": 0.5,
-            "best_iteration": 743,
-            "best_score": 0.37020021603571446,
-            "training_time_seconds": 4.045823812484741,
+            "best_iteration": 2764,
+            "best_score": 0.3768318284935189,
+            "training_time_seconds": 2.6150598526000977,
             "train_shape": [
                 2397,
                 9
@@ -155,13 +176,13 @@
                 9
             ],
             "params": {
-                "max_depth": 10,
-                "eta": 0.022941102115882392,
-                "subsample": 0.6559698269810685,
-                "colsample_bytree": 0.6722927592030148,
-                "lambda": 1.7191065135566566,
-                "alpha": 0.004154617114968086,
-                "gamma": 0.20660928483465638,
+                "max_depth": 8,
+                "eta": 0.0166550261286844,
+                "subsample": 0.6266784985238049,
+                "colsample_bytree": 0.9994192068576869,
+                "lambda": 0.1402819795677949,
+                "alpha": 2.9736501427471667e-08,
+                "gamma": 0.8080849508289585,
                 "min_child_weight": 1,
                 "objective": "binary:logistic",
                 "eval_metric": "logloss",
@@ -170,12 +191,19 @@
                 "tree_method": "hist"
             },
             "metrics": {
-                "accuracy": 0.8280175109443402,
-                "precision": 0.8299748110831234,
+                "accuracy": 0.8255159474671669,
+                "precision": 0.8258145363408521,
                 "recall": 0.8247809762202754,
-                "f1_score": 0.8273697426239799
+                "f1_score": 0.8252974326862867
             },
-            "best_cv_logloss": 0.4130560275850207
+            "confusion_matrix": {
+                "tp": 659,
+                "fp": 139,
+                "fn": 140,
+                "tn": 661,
+                "total": 1599
+            },
+            "best_cv_logloss": 0.4269489581027913
         },
         "optuna_split_70_30": {
             "key": "optuna_split_70_30",
@@ -186,9 +214,9 @@
             "model_json": "models/optuna_split_70_30.json",
             "model_joblib": "models/optuna_split_70_30.joblib",
             "prediction_threshold": 0.5,
-            "best_iteration": 3586,
-            "best_score": 0.3674759653272042,
-            "training_time_seconds": 11.406485080718994,
+            "best_iteration": 2155,
+            "best_score": 0.33314378507702525,
+            "training_time_seconds": 3.5824499130249023,
             "train_shape": [
                 2797,
                 9
@@ -198,13 +226,13 @@
                 9
             ],
             "params": {
-                "max_depth": 5,
-                "eta": 0.020857790519383697,
-                "subsample": 0.6990700215584946,
-                "colsample_bytree": 0.8574671836428648,
-                "lambda": 8.077516410846028,
-                "alpha": 0.0075226381710545385,
-                "gamma": 0.05570604555042946,
+                "max_depth": 12,
+                "eta": 0.010423858149546534,
+                "subsample": 0.991210023766955,
+                "colsample_bytree": 0.526832488915901,
+                "lambda": 0.11472296488424578,
+                "alpha": 0.012237962847000386,
+                "gamma": 0.135015060902319,
                 "min_child_weight": 1,
                 "objective": "binary:logistic",
                 "eval_metric": "logloss",
@@ -213,12 +241,19 @@
                 "tree_method": "hist"
             },
             "metrics": {
-                "accuracy": 0.8498748957464554,
-                "precision": 0.8605851979345955,
-                "recall": 0.8347245409015025,
-                "f1_score": 0.847457627118644
+                "accuracy": 0.8331943286071727,
+                "precision": 0.8469565217391304,
+                "recall": 0.8130217028380634,
+                "f1_score": 0.8296422487223168
             },
-            "best_cv_logloss": 0.4055747338398388
+            "confusion_matrix": {
+                "tp": 487,
+                "fp": 88,
+                "fn": 112,
+                "tn": 512,
+                "total": 1199
+            },
+            "best_cv_logloss": 0.36940208657531787
         },
         "optuna_split_80_20": {
             "key": "optuna_split_80_20",
@@ -229,9 +264,9 @@
             "model_json": "models/optuna_split_80_20.json",
             "model_joblib": "models/optuna_split_80_20.joblib",
             "prediction_threshold": 0.5,
-            "best_iteration": 1675,
-            "best_score": 0.3124573294899892,
-            "training_time_seconds": 5.3749237060546875,
+            "best_iteration": 932,
+            "best_score": 0.3186400176526513,
+            "training_time_seconds": 1.7631785869598389,
             "train_shape": [
                 3196,
                 9
@@ -242,13 +277,13 @@
             ],
             "params": {
                 "max_depth": 12,
-                "eta": 0.019040999987342693,
-                "subsample": 0.7489025047107206,
-                "colsample_bytree": 0.5539243911858696,
-                "lambda": 3.0660191532033276,
-                "alpha": 1.470462779012154e-07,
-                "gamma": 0.15077537775474464,
-                "min_child_weight": 1,
+                "eta": 0.03017557444888367,
+                "subsample": 0.8358629848868456,
+                "colsample_bytree": 0.6781109894536784,
+                "lambda": 2.0859921117789915,
+                "alpha": 0.00016324724534974838,
+                "gamma": 0.2355235705466447,
+                "min_child_weight": 3,
                 "objective": "binary:logistic",
                 "eval_metric": "logloss",
                 "seed": 42,
@@ -256,12 +291,19 @@
                 "tree_method": "hist"
             },
             "metrics": {
-                "accuracy": 0.85125,
-                "precision": 0.8668407310704961,
-                "recall": 0.83,
-                "f1_score": 0.8480204342273308
+                "accuracy": 0.85625,
+                "precision": 0.88,
+                "recall": 0.825,
+                "f1_score": 0.8516129032258064
             },
-            "best_cv_logloss": 0.33826755406127124
+            "confusion_matrix": {
+                "tp": 330,
+                "fp": 45,
+                "fn": 70,
+                "tn": 355,
+                "total": 800
+            },
+            "best_cv_logloss": 0.34807043526752324
         }
     }
 }
