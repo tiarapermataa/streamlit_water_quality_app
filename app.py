@@ -901,6 +901,9 @@ def render_prediction():
             unsafe_allow_html=True,
         )
 
+        cols_to_hide = ["model_key", "model_json", "model_joblib"]
+        metrics_display = metrics_df.drop(columns=cols_to_hide, errors="ignore")
+
         # Ringkasan best model (berdasarkan F1)
         best_row = metrics_df.sort_values("f1_score", ascending=False).iloc[0]
         c1, c2, c3 = st.columns(3)
@@ -909,7 +912,7 @@ def render_prediction():
         c3.metric("Accuracy", f"{best_row['accuracy']:.4f}")
 
         st.markdown("### Tabel Metrik Semua Model")
-        st.dataframe(metrics_df, use_container_width=True)
+        st.dataframe(metrics_display, use_container_width=True)
 
         st.markdown("### Perbandingan F1-Score")
         chart_df = metrics_df[["display_name", "f1_score"]].set_index("display_name")
