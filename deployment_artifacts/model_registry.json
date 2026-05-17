@@ -22,7 +22,7 @@
             "prediction_threshold": 0.5,
             "best_iteration": 829,
             "best_score": 0.405236951260492,
-            "training_time_seconds": 1.381767988204956,
+            "training_time_seconds": 1.4247894287109375,
             "train_shape": [
                 2397,
                 9
@@ -70,7 +70,7 @@
             "prediction_threshold": 0.5,
             "best_iteration": 881,
             "best_score": 0.37434657668126664,
-            "training_time_seconds": 1.4229097366333008,
+            "training_time_seconds": 1.5218908786773682,
             "train_shape": [
                 2797,
                 9
@@ -118,7 +118,7 @@
             "prediction_threshold": 0.5,
             "best_iteration": 957,
             "best_score": 0.3666606085069361,
-            "training_time_seconds": 1.4437494277954102,
+            "training_time_seconds": 1.2860984802246094,
             "train_shape": [
                 3196,
                 9
@@ -164,9 +164,9 @@
             "model_json": "models/optuna_split_60_40.json",
             "model_joblib": "models/optuna_split_60_40.joblib",
             "prediction_threshold": 0.5,
-            "best_iteration": 2764,
-            "best_score": 0.3768318284935189,
-            "training_time_seconds": 2.6150598526000977,
+            "best_iteration": 1647,
+            "best_score": 0.40674826832330335,
+            "training_time_seconds": 2.1336660385131836,
             "train_shape": [
                 2397,
                 9
@@ -176,14 +176,14 @@
                 9
             ],
             "params": {
-                "max_depth": 8,
-                "eta": 0.0166550261286844,
-                "subsample": 0.6266784985238049,
-                "colsample_bytree": 0.9994192068576869,
-                "lambda": 0.1402819795677949,
-                "alpha": 2.9736501427471667e-08,
-                "gamma": 0.8080849508289585,
-                "min_child_weight": 1,
+                "max_depth": 9,
+                "eta": 0.01944031153326643,
+                "subsample": 0.75002567741932,
+                "colsample_bytree": 0.8107029305163936,
+                "lambda": 1.8722951586005685,
+                "alpha": 0.008730752370866094,
+                "gamma": 0.33401244834915955,
+                "min_child_weight": 6,
                 "objective": "binary:logistic",
                 "eval_metric": "logloss",
                 "seed": 42,
@@ -192,18 +192,18 @@
             },
             "metrics": {
                 "accuracy": 0.8255159474671669,
-                "precision": 0.8258145363408521,
-                "recall": 0.8247809762202754,
-                "f1_score": 0.8252974326862867
+                "precision": 0.825,
+                "recall": 0.8260325406758448,
+                "f1_score": 0.8255159474671669
             },
             "confusion_matrix": {
-                "tp": 659,
-                "fp": 139,
-                "fn": 140,
-                "tn": 661,
+                "tp": 660,
+                "fp": 140,
+                "fn": 139,
+                "tn": 660,
                 "total": 1599
             },
-            "best_cv_logloss": 0.4269489581027913
+            "best_cv_logloss": 0.44988584563597056
         },
         "optuna_split_70_30": {
             "key": "optuna_split_70_30",
@@ -214,9 +214,9 @@
             "model_json": "models/optuna_split_70_30.json",
             "model_joblib": "models/optuna_split_70_30.joblib",
             "prediction_threshold": 0.5,
-            "best_iteration": 2155,
-            "best_score": 0.33314378507702525,
-            "training_time_seconds": 3.5824499130249023,
+            "best_iteration": 1475,
+            "best_score": 0.33790564465538847,
+            "training_time_seconds": 2.3458468914031982,
             "train_shape": [
                 2797,
                 9
@@ -226,14 +226,14 @@
                 9
             ],
             "params": {
-                "max_depth": 12,
-                "eta": 0.010423858149546534,
-                "subsample": 0.991210023766955,
-                "colsample_bytree": 0.526832488915901,
-                "lambda": 0.11472296488424578,
-                "alpha": 0.012237962847000386,
-                "gamma": 0.135015060902319,
-                "min_child_weight": 1,
+                "max_depth": 9,
+                "eta": 0.018056274623464683,
+                "subsample": 0.7817299962162099,
+                "colsample_bytree": 0.5509853517755481,
+                "lambda": 0.6543125976700668,
+                "alpha": 0.009604109913227696,
+                "gamma": 0.03639173744483071,
+                "min_child_weight": 2,
                 "objective": "binary:logistic",
                 "eval_metric": "logloss",
                 "seed": 42,
@@ -241,19 +241,19 @@
                 "tree_method": "hist"
             },
             "metrics": {
-                "accuracy": 0.8331943286071727,
-                "precision": 0.8469565217391304,
-                "recall": 0.8130217028380634,
-                "f1_score": 0.8296422487223168
+                "accuracy": 0.8440366972477065,
+                "precision": 0.856401384083045,
+                "recall": 0.8263772954924875,
+                "f1_score": 0.8411214953271028
             },
             "confusion_matrix": {
-                "tp": 487,
-                "fp": 88,
-                "fn": 112,
-                "tn": 512,
+                "tp": 495,
+                "fp": 83,
+                "fn": 104,
+                "tn": 517,
                 "total": 1199
             },
-            "best_cv_logloss": 0.36940208657531787
+            "best_cv_logloss": 0.3842556895210302
         },
         "optuna_split_80_20": {
             "key": "optuna_split_80_20",
@@ -264,9 +264,9 @@
             "model_json": "models/optuna_split_80_20.json",
             "model_joblib": "models/optuna_split_80_20.joblib",
             "prediction_threshold": 0.5,
-            "best_iteration": 932,
-            "best_score": 0.3186400176526513,
-            "training_time_seconds": 1.7631785869598389,
+            "best_iteration": 1066,
+            "best_score": 0.3121070780260197,
+            "training_time_seconds": 2.377420663833618,
             "train_shape": [
                 3196,
                 9
@@ -276,14 +276,14 @@
                 9
             ],
             "params": {
-                "max_depth": 12,
-                "eta": 0.03017557444888367,
-                "subsample": 0.8358629848868456,
-                "colsample_bytree": 0.6781109894536784,
-                "lambda": 2.0859921117789915,
-                "alpha": 0.00016324724534974838,
-                "gamma": 0.2355235705466447,
-                "min_child_weight": 3,
+                "max_depth": 9,
+                "eta": 0.01849040781531601,
+                "subsample": 0.5003863959765442,
+                "colsample_bytree": 0.9207345568094069,
+                "lambda": 0.15319121299783653,
+                "alpha": 2.567028525573608e-06,
+                "gamma": 0.23812818704708735,
+                "min_child_weight": 1,
                 "objective": "binary:logistic",
                 "eval_metric": "logloss",
                 "seed": 42,
@@ -291,19 +291,19 @@
                 "tree_method": "hist"
             },
             "metrics": {
-                "accuracy": 0.85625,
-                "precision": 0.88,
-                "recall": 0.825,
-                "f1_score": 0.8516129032258064
+                "accuracy": 0.85875,
+                "precision": 0.8826666666666667,
+                "recall": 0.8275,
+                "f1_score": 0.8541935483870968
             },
             "confusion_matrix": {
-                "tp": 330,
-                "fp": 45,
-                "fn": 70,
-                "tn": 355,
+                "tp": 331,
+                "fp": 44,
+                "fn": 69,
+                "tn": 356,
                 "total": 800
             },
-            "best_cv_logloss": 0.34807043526752324
+            "best_cv_logloss": 0.3393262285911767
         }
     }
 }
