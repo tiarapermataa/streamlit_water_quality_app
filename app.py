@@ -757,16 +757,6 @@ with st.sidebar:
     st.write(f"**Best Iteration:** {selected_model_info.get('best_iteration', 'N/A')}")
     st.write(f"**Best Score:** {selected_model_info.get('best_score', 'N/A'):.6f}")
     st.write(f"**Training Time:** {selected_model_info.get('training_time_seconds', 'N/A'):.2f}s")
-    
-    st.divider()
-    with st.expander("Artefak yang digunakan"):
-        st.write("- model_registry.json")
-        st.write("- feature_order.json")
-        st.write("- feature_imputer.joblib")
-        st.write("- minmax_scaler.joblib")
-        st.write(f"- models/{selected_model_key}.json")
-        st.write(f"- models/{selected_model_key}.joblib")
-
 
 # Load selected model
 model_json_path = find_artifact(selected_model_info["model_json"])
@@ -799,14 +789,6 @@ def render_home():
     col1.metric("Jumlah Model", metadata.get("available_model_count", 0))
     col2.metric("Threshold", metadata.get("prediction_threshold", 0.5))
     col3.metric("Random State", metadata.get("random_state", 0))
-
-    st.markdown("### Versi Library")
-    versions = metadata.get("library_versions", {})
-    st.write(f"- Python: `{versions.get('python','-')}`")
-    st.write(f"- NumPy: `{versions.get('numpy','-')}`")
-    st.write(f"- Pandas: `{versions.get('pandas','-')}`")
-    st.write(f"- Scikit-learn: `{versions.get('sklearn','-')}`")
-    st.write(f"- XGBoost: `{versions.get('xgboost','-')}`")
 
     st.markdown("### Fitur Input & Statistik")
     st.dataframe(schema_df, use_container_width=True)
@@ -976,51 +958,6 @@ def render_prediction():
             st.dataframe(input_df, use_container_width=True)
             st.write(f"Threshold klasifikasi: `{threshold}`")
             st.write("Aturan: probabilitas > threshold diklasifikasikan sebagai `Layak Minum`.")
-
-    with st.expander("Prediksi batch CSV (opsional)"):
-        st.markdown(
-            '<p class="section-lead">Upload CSV hanya jika Anda ingin prediksi banyak data sekaligus.</p>',
-            unsafe_allow_html=True,
-        )
-        uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
-
-        if uploaded_file is not None:
-            try:
-                batch_df = pd.read_csv(uploaded_file)
-                missing_cols = [col for col in feature_order if col not in batch_df.columns]
-
-                if missing_cols:
-                    st.error(f"Kolom berikut belum ada pada CSV: {missing_cols}")
-                else:
-                    batch_input = batch_df[feature_order].copy()
-                    imputed = imputer.transform(batch_input)
-                    scaled = scaler.transform(imputed)
-                    dmatrix = xgb.DMatrix(scaled, feature_names=feature_order)
-
-                    probabilities = predict_xgb_booster(selected_model, dmatrix, best_iteration)
-                    threshold_batch = float(registry.get("prediction_threshold", 0.5))
-                    predictions = (probabilities > threshold_batch).astype(int)
-                    class_mapping = registry.get("class_mapping", {"0": "Tidak Layak Minum", "1": "Layak Minum"})
-
-                    result_df = batch_df.copy()
-                    result_df["probabilitas_layak_minum"] = probabilities
-                    result_df["prediksi_kelas"] = predictions
-                    result_df["prediksi_label"] = [class_mapping.get(str(pred), str(pred)) for pred in predictions]
-
-                    st.success("Prediksi batch berhasil diproses.")
-                    st.dataframe(result_df, use_container_width=True)
-
-                    csv_result = result_df.to_csv(index=False).encode("utf-8")
-                    st.download_button(
-                        label="Download Hasil Prediksi CSV",
-                        data=csv_result,
-                        file_name="hasil_prediksi_kualitas_air.csv",
-                        mime="text/csv",
-                    )
-            except Exception as e:
-                st.error("Gagal memproses file CSV.")
-                st.exception(e)
-
 
 # =====================================================
 # Routing Halaman
