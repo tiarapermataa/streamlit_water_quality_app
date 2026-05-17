@@ -532,7 +532,7 @@ def apply_vercel_theme():
 # Konfigurasi Halaman
 # =====================================================
 st.set_page_config(
-    page_title="Prediksi Kualitas Air",
+    page_title="Prediksi Kualitas Air Minum",
     page_icon="💧",
     layout="wide",
 )
@@ -685,15 +685,15 @@ DEFAULT_VALUES = {
 }
 
 FEATURE_DESCRIPTIONS = {
-    "ph": "Tingkat keasaman air.",
-    "Hardness": "Kesadahan air.",
-    "Solids": "Jumlah total padatan terlarut.",
-    "Chloramines": "Kadar kloramin dalam air.",
-    "Sulfate": "Kadar sulfat dalam air.",
-    "Conductivity": "Kemampuan air menghantarkan listrik.",
-    "Organic_carbon": "Kandungan karbon organik.",
-    "Trihalomethanes": "Kadar senyawa trihalometana.",
-    "Turbidity": "Tingkat kekeruhan air.",
+    "ph": "Mengukur tingkat keasaman atau kebasaan air.",
+    "Hardness": "Menunjukkan konsentrasi mineral terlarut.",
+    "Solids": "Mengukur total padatan organik dan anorganik.",
+    "Chloramines": "Jumlah kloramin yang ditambahkan sebagai disinfektan air minum.",
+    "Sulfate": "Konsentrasi ion sulfat terlarut.",
+    "Conductivity": "Konduktivitas listrik air yang mencerminkan kandungan ion terlarut.",
+    "Organic carbon": "Jumlah karbon organik terlarut yang mengindikasikan keberadaan bahan organik.",
+    "Trihalomethanes": "Konsentrasi trihalometana sebagai produk sampingan proses desinfeksi klorin.",
+    "Turbidity": "Tingkat kekeruhan/kejernihan air yang diukur berdasarkan hamburan cahaya.",
 }
 
 
@@ -809,11 +809,10 @@ def render_prediction():
     st.markdown(
         """
         <section class="hero">
-            <span class="eyebrow">Prediksi Kualitas Air</span>
+            <span class="eyebrow">Prediksi Kualitas Air Minum</span>
             <h1>Masukkan Parameter, Dapatkan Hasil</h1>
             <p>
-            Halaman ini difokuskan untuk prediksi tunggal secepat mungkin.
-            Isi nilai parameter di kiri, lalu lihat hasil prediksi di kanan.
+            Masukkan nilai setiap parameter kualitas air untuk memperoleh hasil prediksi kelayakan air minum berdasarkan model klasifikasi yang dipilih.
             </p>
         </section>
         """,
@@ -830,7 +829,7 @@ def render_prediction():
     threshold = float(registry.get("prediction_threshold", 0.5))
 
     with input_col:
-        st.subheader("1) Input Parameter")
+        st.subheader("Input Parameter")
         st.markdown(
             '<p class="section-lead">Isi nilai parameter berikut sesuai kondisi sampel air yang ingin diprediksi.</p>',
             unsafe_allow_html=True,
@@ -854,7 +853,7 @@ def render_prediction():
         st.markdown("</div>", unsafe_allow_html=True)
 
     with result_col:
-        st.subheader("2) Hasil Prediksi")
+        st.subheader("Hasil Prediksi")
 
         if submitted:
             input_df = build_input_df(input_values, feature_order)
@@ -899,8 +898,7 @@ def render_prediction():
         st.markdown("</div>", unsafe_allow_html=True)
 
     if submitted and input_df is not None:
-        with st.expander("Lihat detail input dan preprocessing"):
-            st.write("**Input sesuai feature order:**")
+        with st.expander("Lihat detail input"):
             st.dataframe(input_df, use_container_width=True)
 
         # ── Dashboard ditampilkan di bawah hasil prediksi ──
@@ -915,7 +913,7 @@ def render_prediction():
                 <span class="eyebrow">Dashboard</span>
                 <h1>Performa Model</h1>
                 <p>
-                Ringkasan metrik dari semua model yang tersedia di registry.
+                Visualisasi perbandingan kinerja model XGBoost sebelum dan sesudah optimasi hyperparameter menggunakan Optuna pada klasifikasi kualitas air minum.
                 </p>
             </section>
             """,
@@ -995,7 +993,7 @@ def render_prediction():
             st.pyplot(fig)
             plt.close(fig)
 
-        st.markdown("### Confusion Matrix (Semua Model)")
+        st.markdown("### Confusion Matrix")
 
         splits = ["60:40", "70:30", "80:20"]
         model_types = ["baseline", "optuna"]
