@@ -436,6 +436,12 @@ def apply_vercel_theme():
             padding: 16px;
         }
 
+        div[data-testid="stMetric"] [data-testid="stMetricValue"]{
+            font-size: 20px;
+            white-space: normal;
+            word-break: break-word;
+        }
+
         div[data-testid="stProgress"] > div{
             box-shadow: 0 0 0 1px var(--line);
             border-radius: 9999px;
@@ -562,7 +568,34 @@ def load_shared_artifacts():
     with open(feature_order_path, "r", encoding="utf-8") as f:
         feature_order = json.load(f)
     
-    imputer = joblib.load(imputer_path)
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        old_imputer = joblib.load(imputer_path)
+    
+    # Rebuild imputer to avoid version-mismatch errors (e.g. _fill_dtype
+    # renamed to _fit_dtype between scikit-learn 1.5 → 1.8).
+    try:
+        old_imputer.transform(
+            pd.DataFrame(np.zeros((1, old_imputer.n_features_in_)),
+                         columns=old_imputer.feature_names_in_)
+        )
+        imputer = old_imputer  # works fine, use as-is
+    except AttributeError:
+        from sklearn.impute import SimpleImputer
+        imputer = SimpleImputer(
+            strategy=old_imputer.strategy,
+            missing_values=old_imputer.missing_values,
+            fill_value=old_imputer.fill_value,
+        )
+        # Fit on dummy data then overwrite statistics with the original values
+        dummy = pd.DataFrame(
+            np.zeros((2, old_imputer.n_features_in_)),
+            columns=old_imputer.feature_names_in_,
+        )
+        imputer.fit(dummy)
+        imputer.statistics_ = old_imputer.statistics_
+    
     scaler = joblib.load(scaler_path)
     
     return imputer, scaler, feature_order
@@ -699,7 +732,7 @@ def predict_quality(input_df: pd.DataFrame, model, best_iteration=None):
 # =====================================================
 with st.sidebar:
     st.markdown("## Navigasi")
-    page = st.radio("Pilih Halaman", ["Home", "Dashboard", "Prediksi"])
+    page = st.radio("Pilih Halaman", ["Home", "Prediksi"])
     st.divider()
 
     st.markdown("### 📊 Pilih Model")
@@ -802,61 +835,6 @@ def render_home():
 
 
 # =====================================================
-# Halaman Dashboard
-# =====================================================
-def render_dashboard():
-    metrics_df = load_metrics_registry()
-
-    st.markdown(
-        """
-        <section class="hero">
-            <span class="eyebrow">Dashboard</span>
-            <h1>Performa Model</h1>
-            <p>
-            Ringkasan metrik dari semua model yang tersedia di registry.
-            </p>
-        </section>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # Ringkasan best model (berdasarkan F1)
-    best_row = metrics_df.sort_values("f1_score", ascending=False).iloc[0]
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Best Model (F1)", best_row["display_name"])
-    c2.metric("F1-Score", f"{best_row['f1_score']:.4f}")
-    c3.metric("Accuracy", f"{best_row['accuracy']:.4f}")
-
-    st.markdown("### Tabel Metrik Semua Model")
-    st.dataframe(metrics_df, use_container_width=True)
-
-    st.markdown("### Perbandingan F1-Score")
-    chart_df = metrics_df[["display_name", "f1_score"]].set_index("display_name")
-    st.bar_chart(chart_df)
-
-    st.markdown("### Perbandingan Accuracy")
-    acc_df = metrics_df[["display_name", "accuracy"]].set_index("display_name")
-    st.bar_chart(acc_df)
-
-    st.markdown("### Confusion Matrix (Semua Model)")
-    for model_key, model_info in registry.get("models", {}).items():
-        cm = model_info.get("confusion_matrix", {})
-        st.markdown(f"**{model_info.get('display_name', model_key)}**")
-        if cm:
-            cm_df = pd.DataFrame(
-                [
-                    [cm.get("tn", 0), cm.get("fp", 0)],
-                    [cm.get("fn", 0), cm.get("tp", 0)],
-                ],
-                index=["Actual: Tidak Layak", "Actual: Layak"],
-                columns=["Pred: Tidak Layak", "Pred: Layak"],
-            )
-            st.dataframe(cm_df, use_container_width=True)
-        else:
-            st.info("Confusion matrix belum tersedia untuk model ini.")
-
-
-# =====================================================
 # Halaman Prediksi
 # =====================================================
 def render_prediction():
@@ -956,15 +934,64 @@ def render_prediction():
         with st.expander("Lihat detail input dan preprocessing"):
             st.write("**Input sesuai feature order:**")
             st.dataframe(input_df, use_container_width=True)
-            st.write(f"Threshold klasifikasi: `{threshold}`")
-            st.write("Aturan: probabilitas > threshold diklasifikasikan sebagai `Layak Minum`.")
+
+        # ── Dashboard ditampilkan di bawah hasil prediksi ──
+        st.divider()
+        metrics_df = load_metrics_registry()
+
+        st.markdown(
+            """
+            <section class="hero">
+                <span class="eyebrow">Dashboard</span>
+                <h1>Performa Model</h1>
+                <p>
+                Ringkasan metrik dari semua model yang tersedia di registry.
+                </p>
+            </section>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Ringkasan best model (berdasarkan F1)
+        best_row = metrics_df.sort_values("f1_score", ascending=False).iloc[0]
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Best Model (F1)", best_row["display_name"])
+        c2.metric("F1-Score", f"{best_row['f1_score']:.4f}")
+        c3.metric("Accuracy", f"{best_row['accuracy']:.4f}")
+
+        st.markdown("### Tabel Metrik Semua Model")
+        st.dataframe(metrics_df, use_container_width=True)
+
+        st.markdown("### Perbandingan F1-Score")
+        chart_df = metrics_df[["display_name", "f1_score"]].set_index("display_name")
+        st.bar_chart(chart_df)
+
+        st.markdown("### Perbandingan Accuracy")
+        acc_df = metrics_df[["display_name", "accuracy"]].set_index("display_name")
+        st.bar_chart(acc_df)
+
+        st.markdown("### Confusion Matrix (Semua Model)")
+        for model_key, model_info in registry.get("models", {}).items():
+            cm = model_info.get("confusion_matrix", {})
+            st.markdown(f"**{model_info.get('display_name', model_key)}**")
+            if cm:
+                cm_df = pd.DataFrame(
+                    [
+                        [cm.get("tn", 0), cm.get("fp", 0)],
+                        [cm.get("fn", 0), cm.get("tp", 0)],
+                    ],
+                    index=["Actual: Tidak Layak", "Actual: Layak"],
+                    columns=["Pred: Tidak Layak", "Pred: Layak"],
+                )
+                st.dataframe(cm_df, use_container_width=True)
+            else:
+                st.info("Confusion matrix belum tersedia untuk model ini.")
+
 
 # =====================================================
 # Routing Halaman
 # =====================================================
 if page == "Home":
     render_home()
-elif page == "Dashboard":
-    render_dashboard()
 elif page == "Prediksi":
     render_prediction()
