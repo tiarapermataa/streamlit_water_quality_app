@@ -9,513 +9,151 @@ import xgboost as xgb
 
 
 # =====================================================
-# New UI System (from scratch)
+# UI THEME (LIGHT MODE ONLY)
 # =====================================================
 def apply_vercel_theme():
-        css = """
-        <style>
-        /* Default = light */
-        :root{
-            --bg: #ffffff;
-            --surface: #ffffff;
-            --text: #171717;
-            --muted: #4d4d4d;
-            --line: rgba(0,0,0,0.08);
-            --line-soft: rgba(0,0,0,0.06);
-            --shadow-soft: rgba(0,0,0,0.04);
-            --blue: #0a72ef;
-            --pink: #de1d8d;
-            --red: #ff5b4f;
-            --badge-bg: #ebf5ff;
-            --badge-text: #0068d6;
-            --focus: hsla(212, 100%, 48%, 1);
-            --radius-sm: 6px;
-            --radius-md: 8px;
-            --radius-lg: 14px;
-            --radius-pill: 9999px;
-            --max: 1200px;
-        }
+    css = """
+    <style>
 
-        /* Streamlit theme detection */
-        html[data-theme="dark"], 
-        html[data-theme="dark"] :root {
-            --bg: #0f0f0f;
-            --surface: #1a1a1a;
-            --text: #ececec;
-            --muted: #b0b0b0;
-            --line: rgba(255,255,255,0.08);
-            --line-soft: rgba(255,255,255,0.06);
-            --shadow-soft: rgba(0,0,0,0.3);
-            --badge-bg: #1e3a5f;
-            --badge-text: #6da8ff;
-        }
+    :root{
+        --bg: #ffffff;
+        --surface: #ffffff;
+        --text: #171717;
+        --muted: #4d4d4d;
+        --line: rgba(0,0,0,0.08);
+        --line-soft: rgba(0,0,0,0.06);
+        --shadow-soft: rgba(0,0,0,0.04);
+        --blue: #0a72ef;
+        --pink: #de1d8d;
+        --red: #ff5b4f;
+        --badge-bg: #ebf5ff;
+        --badge-text: #0068d6;
+        --focus: hsla(212, 100%, 48%, 1);
+        --radius-pill: 9999px;
+        --max: 1200px;
+    }
 
-        /* Fallback jika browser pakai dark mode tapi Streamlit tidak set data-theme */
-        @media (prefers-color-scheme: dark){
-            :root{
-                --bg: #0f0f0f;
-                --surface: #1a1a1a;
-                --text: #ececec;
-                --muted: #b0b0b0;
-                --line: rgba(255,255,255,0.08);
-                --line-soft: rgba(255,255,255,0.06);
-                --shadow-soft: rgba(0,0,0,0.3);
-                --badge-bg: #1e3a5f;
-                --badge-text: #6da8ff;
-            }
-        }
+    .stApp{
+        background:
+            radial-gradient(circle at top left, rgba(10,114,239,0.06), transparent 28%),
+            radial-gradient(circle at top right, rgba(222,29,141,0.05), transparent 22%),
+            linear-gradient(180deg, var(--bg) 0%, var(--bg) 100%);
+        color: var(--text);
+    }
 
-        .stApp{
-            background:
-                radial-gradient(circle at top left, rgba(10,114,239,0.06), transparent 28%),
-                radial-gradient(circle at top right, rgba(222,29,141,0.05), transparent 22%),
-                linear-gradient(180deg, var(--bg) 0%, var(--bg) 100%);
-            color: var(--text);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+    html, body, [class*="css"]{
+        font-family: Arial, sans-serif !important;
+        color: var(--text);
+    }
 
-        html, body, [class*="css"]{
-            font-family: Geist, Arial, "Segoe UI", Roboto, "Helvetica Neue", sans-serif !important;
-            color: var(--text);
-        }
+    .block-container{
+        max-width: var(--max);
+        padding-top: 28px;
+        padding-bottom: 64px;
+    }
 
-        .block-container{
-            max-width: var(--max);
-            padding-top: 28px;
-            padding-bottom: 64px;
-        }
+    .hero{
+        padding: 10px 0 20px 0;
+        margin-bottom: 18px;
+    }
 
-        /* Keep Streamlit toolbar and controls visible */
-        .stApp [data-testid="stDecoration"]{
-            display:none !important;
-        }
-        
-        .stApp header {
-            background: var(--surface);
-            border-bottom: 1px solid var(--line);
-            visibility: visible !important;
-            display: flex !important;
-        }
-        
-        .stApp [data-testid="stToolbar"] {
-            visibility: visible !important;
-            display: flex !important;
-        }
-        
-        .stApp [data-testid="stToolbar"] > div {
-            visibility: visible !important;
-            display: flex !important;
-        }
-        
-        .stApp [data-testid="stToolbar"] button {
-            visibility: visible !important;
-            display: inline-flex !important;
-            opacity: 1 !important;
-        }
+    .eyebrow{
+        display: inline-flex;
+        padding: 6px 12px;
+        border-radius: var(--radius-pill);
+        color: var(--badge-text);
+        background: var(--badge-bg);
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
 
-        section[data-testid="stSidebar"]{
-            background: var(--surface) !important;
-            box-shadow: 0 0 0 1px var(--line);
-            visibility: visible !important;
-            display: block !important;
-        }
-        
-        section[data-testid="stSidebar"] > div {
-            visibility: visible !important;
-        }
+    .hero h1{
+        margin: 14px 0 8px 0;
+        font-size: clamp(42px, 6vw, 64px);
+        line-height: .98;
+        letter-spacing: -2.4px;
+        font-weight: 600;
+    }
 
-        .hero{
-            padding: 10px 0 20px 0;
-            margin-bottom: 18px;
-            position: relative;
-        }
+    .hero p{
+        margin: 0;
+        max-width: 760px;
+        font-size: 18px;
+        line-height: 1.65;
+        color: var(--muted);
+    }
 
-        .eyebrow{
-            display: inline-flex;
-            gap: 8px;
-            align-items: center;
-            padding: 6px 12px;
-            border-radius: var(--radius-pill);
-            box-shadow: 0 0 0 1px var(--line);
-            color: var(--badge-text);
-            background: var(--badge-bg);
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-        }
+    .panel{
+        background: var(--surface);
+        border-radius: 18px;
+        box-shadow: 0 0 0 1px var(--line);
+        padding: 22px;
+    }
 
+    .section-lead{
+        color: var(--muted);
+        line-height: 1.6;
+        margin: 0 0 18px 0;
+    }
+
+    .summary-card{
+        border-radius: 16px;
+        padding: 16px;
+        background: var(--surface);
+        box-shadow: 0 0 0 1px var(--line);
+    }
+
+    .summary-card strong{
+        display:block;
+        font-size: 13px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 8px;
+    }
+
+    .summary-card span{
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--text);
+    }
+
+    .stButton > button,
+    .stDownloadButton > button{
+        border-radius: 12px !important;
+        padding: 10px 18px !important;
+        font-weight: 600 !important;
+        border: none !important;
+        background: var(--text) !important;
+        color: white !important;
+    }
+
+    div[data-testid="stMetric"]{
+        background: var(--surface);
+        box-shadow: 0 0 0 1px var(--line);
+        border-radius: 14px;
+        padding: 16px;
+    }
+
+    div[data-testid="stDataFrame"]{
+        box-shadow: 0 0 0 1px var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+    @media (max-width: 900px){
         .hero h1{
-            margin: 14px 0 8px 0;
-            font-size: clamp(42px, 6vw, 64px);
-            line-height: .98;
-            letter-spacing: -2.4px;
-            font-weight: 600;
-            color: var(--text);
+            font-size: clamp(34px, 10vw, 48px);
         }
+    }
 
-        .hero p{
-            margin: 0;
-            max-width: 760px;
-            font-size: 18px;
-            line-height: 1.65;
-            color: var(--muted);
-        }
-
-        .hero-row{
-            display: grid;
-            grid-template-columns: 1.35fr .85fr;
-            gap: 16px;
-            align-items: stretch;
-            margin-top: 22px;
-        }
-
-        .hero-card{
-            padding: 20px;
-            border-radius: 18px;
-            background: rgba(255,255,255,0.88);
-            box-shadow: 0 0 0 1px var(--line), 0 2px 2px var(--shadow-soft);
-        }
-
-        .hero-card-title{
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: .06em;
-            margin-bottom: 12px;
-        }
-
-        .stack-badges{
-            display:flex;
-            flex-wrap:wrap;
-            gap:10px;
-        }
-
-        .workflow{
-            display:grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-        }
-
-        .workflow-step{
-            border-radius: 16px;
-            background: var(--surface);
-            box-shadow: 0 0 0 1px var(--line), 0 2px 2px var(--shadow-soft);
-            padding: 16px;
-            min-height: 126px;
-        }
-
-        .workflow-step .kicker{
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .workflow-step h3{
-            margin: 0 0 8px 0;
-            font-size: 24px;
-            line-height: 1.08;
-            letter-spacing: -1px;
-            font-weight: 600;
-        }
-
-        .workflow-step p{
-            margin: 0;
-            color: var(--muted);
-            line-height: 1.55;
-            font-size: 14px;
-        }
-
-        .blue{ color: var(--blue); }
-        .pink{ color: var(--pink); }
-        .red{ color: var(--red); }
-
-        .content-grid{
-            display:grid;
-            grid-template-columns: 1.08fr .92fr;
-            gap: 18px;
-            margin-top: 18px;
-        }
-
-        .panel{
-            background: var(--surface);
-            border-radius: 18px;
-            box-shadow: 0 0 0 1px var(--line), 0 2px 2px var(--shadow-soft);
-            padding: 22px;
-        }
-
-        .panel h2,
-        .panel h3{
-            margin-top: 0;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
-            color: var(--text);
-        }
-
-        .section-lead{
-            color: var(--muted);
-            line-height: 1.6;
-            margin: 0 0 18px 0;
-        }
-
-        .metric-strip{
-            display:grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px;
-            margin: 18px 0 0 0;
-        }
-
-        .metric-card{
-            background: var(--surface);
-            border-radius: 14px;
-            box-shadow: 0 0 0 1px var(--line);
-            padding: 16px;
-        }
-
-        .metric-card .label{
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: var(--muted);
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .metric-card .value{
-            font-size: 28px;
-            line-height: 1;
-            letter-spacing: -1.2px;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 6px;
-        }
-
-        .metric-card .note{
-            color: var(--muted);
-            font-size: 13px;
-            line-height: 1.45;
-        }
-
-        .hero-summary{
-            margin-top: 18px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .summary-card{
-            border-radius: 16px;
-            padding: 16px;
-            background: var(--surface);
-            box-shadow: 0 0 0 1px var(--line);
-        }
-
-        .summary-card strong{
-            display:block;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: var(--muted);
-            margin-bottom: 8px;
-        }
-
-        .summary-card span{
-            font-size: 15px;
-            line-height: 1.5;
-            color: var(--text);
-        }
-
-        .stTabs [data-baseweb="tab-list"]{
-            gap: 8px;
-            background: transparent;
-        }
-
-        .stTabs [data-baseweb="tab"]{
-            border-radius: 9999px;
-            padding: 8px 14px;
-            box-shadow: 0 0 0 1px var(--line);
-            font-weight: 600;
-            color: var(--text);
-            background: var(--surface);
-        }
-
-        .stTabs [aria-selected="true"]{
-            background: var(--text) !important;
-            color: var(--surface) !important;
-            box-shadow: none !important;
-        }
-
-        label, .stNumberInput label, .stTextInput label, .stSelectbox label{
-            color: var(--text) !important;
-            font-weight: 600 !important;
-        }
-
-        div[data-baseweb="input"] > div,
-        div[data-baseweb="select"] > div,
-        div[data-baseweb="textarea"] > div{
-            box-shadow: 0 0 0 1px var(--line) !important;
-            border-radius: 12px !important;
-            background: var(--surface) !important;
-        }
-
-        /* Force readable text colors for all form fields */
-        input, textarea, select,
-        .stTextInput input,
-        .stNumberInput input,
-        [data-baseweb="input"] input,
-        [data-baseweb="textarea"] textarea,
-        [data-baseweb="select"] input {
-            color: var(--text) !important;
-            -webkit-text-fill-color: var(--text) !important;
-            opacity: 1 !important;
-            font-weight: 500 !important;
-        }
-
-        input::placeholder,
-        textarea::placeholder {
-            color: #7a7a7a !important;
-            opacity: 1 !important;
-        }
-
-        /* Streamlit number input +/- controls */
-        .stNumberInput button,
-        [data-baseweb="input"] button {
-            color: var(--text) !important;
-            opacity: 1 !important;
-        }
-
-        .stButton > button,
-        .stDownloadButton > button{
-            border-radius: 12px !important;
-            padding: 10px 18px !important;
-            font-weight: 600 !important;
-            border: none !important;
-            background: var(--text) !important;
-            color: var(--surface) !important;
-            box-shadow: none !important;
-        }
-
-        .stButton > button *,
-        .stDownloadButton > button * {
-            color: var(--surface) !important;
-            -webkit-text-fill-color: var(--surface) !important;
-            opacity: 1 !important;
-        }
-
-        .stButton > button:hover,
-        .stDownloadButton > button:hover{
-            filter: brightness(1.05);
-        }
-
-        section[data-testid="stFileUploaderDropzone"]{
-            box-shadow: 0 0 0 1px var(--line) !important;
-            border-radius: 16px !important;
-            background: var(--surface) !important;
-        }
-
-        details{
-            box-shadow: 0 0 0 1px var(--line) !important;
-            border-radius: 14px !important;
-            background: var(--surface) !important;
-        }
-
-        hr{
-            border: none;
-            border-top: 1px solid var(--line-soft);
-            margin: 18px 0;
-        }
-
-        div[data-testid="stMetric"]{
-            background: var(--surface);
-            box-shadow: 0 0 0 1px var(--line);
-            border-radius: 14px;
-            padding: 16px;
-        }
-
-        div[data-testid="stProgress"] > div{
-            box-shadow: 0 0 0 1px var(--line);
-            border-radius: 9999px;
-            background: var(--surface);
-            overflow: hidden;
-        }
-
-        div[data-testid="stProgress"] div[role="progressbar"]{
-            background: var(--blue) !important;
-        }
-
-        div[data-testid="stDataFrame"]{
-            box-shadow: 0 0 0 1px var(--line);
-            border-radius: 14px;
-            overflow: hidden;
-            background: var(--surface);
-        }
-
-        div[data-testid="stAlert"]{
-            border-radius: 14px;
-            box-shadow: 0 0 0 1px var(--line);
-        }
-
-        button:focus, input:focus, select:focus, textarea:focus{
-            outline: 2px solid var(--focus) !important;
-            outline-offset: 2px;
-        }
-
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark){
-            :root{
-                --bg: #0f0f0f;
-                --surface: #1a1a1a;
-                --text: #ececec;
-                --muted: #b0b0b0;
-                --line: rgba(255,255,255,0.08);
-                --line-soft: rgba(255,255,255,0.06);
-                --shadow-soft: rgba(0,0,0,0.3);
-                --badge-bg: #1e3a5f;
-                --badge-text: #6da8ff;
-            }
-            
-            .stApp{
-                background:
-                    radial-gradient(circle at top left, rgba(10,114,239,0.03), transparent 28%),
-                    radial-gradient(circle at top right, rgba(222,29,141,0.02), transparent 22%),
-                    linear-gradient(180deg, #0f0f0f 0%, #0f0f0f 100%);
-                color: var(--text);
-            }
-            
-            html, body, [class*="css"]{
-                color: var(--text);
-            }
-        }
-
-        @media (max-width: 900px){
-            .hero-row,
-            .content-grid,
-            .workflow,
-            .metric-strip,
-            .hero-summary{
-                grid-template-columns: 1fr;
-            }
-            .hero h1{
-                font-size: clamp(34px, 10vw, 48px);
-            }
-        }
-
-        @media (max-width: 600px){
-            .block-container{ padding-left: 16px; padding-right: 16px; }
-            .panel{ padding: 18px; }
-            .hero{ padding-top: 0; }
-        }
-        </style>
-        """
-        st.markdown(css, unsafe_allow_html=True)
+    </style>
+    """
+    st.markdown(css, unsafe_allow_html=True)
 
 
 # =====================================================
-# Konfigurasi Halaman
+# PAGE CONFIG
 # =====================================================
 st.set_page_config(
     page_title="Prediksi Kualitas Air",
@@ -527,7 +165,7 @@ apply_vercel_theme()
 
 
 # =====================================================
-# Helper Path Artefak
+# PATH CONFIG
 # =====================================================
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -538,79 +176,49 @@ ARTIFACT_DIR_CANDIDATES = [
 
 
 def find_artifact(filename: str) -> Path:
-    """Mencari file artefak pada folder app atau folder deployment_artifacts."""
     for artifact_dir in ARTIFACT_DIR_CANDIDATES:
         path = artifact_dir / filename
         if path.exists():
             return path
+
     raise FileNotFoundError(
-        f"File '{filename}' tidak ditemukan. "
-        f"Letakkan file tersebut di folder 'deployment_artifacts' atau sejajar dengan app.py."
+        f"File '{filename}' tidak ditemukan."
     )
 
 
 # =====================================================
-# Load Artefak Deployment (Multi-Model)
+# LOAD ARTIFACTS
 # =====================================================
 @st.cache_resource
 def load_shared_artifacts():
-    """Load artefak yang digunakan bersama semua model."""
     feature_order_path = find_artifact("feature_order.json")
     imputer_path = find_artifact("feature_imputer.joblib")
     scaler_path = find_artifact("minmax_scaler.joblib")
-    
+
     with open(feature_order_path, "r", encoding="utf-8") as f:
         feature_order = json.load(f)
-    
+
     imputer = joblib.load(imputer_path)
     scaler = joblib.load(scaler_path)
-    
+
     return imputer, scaler, feature_order
 
 
 @st.cache_resource
 def load_model_registry():
-    """Load registry untuk semua model tersedia."""
-    try:
-        registry_path = find_artifact("model_registry.json")
-        with open(registry_path, "r", encoding="utf-8") as f:
-            registry = json.load(f)
-        return registry
-    except FileNotFoundError:
-        st.error("model_registry.json tidak ditemukan.")
-        st.stop()
+    registry_path = find_artifact("model_registry.json")
+
+    with open(registry_path, "r", encoding="utf-8") as f:
+        registry = json.load(f)
+
+    return registry
 
 
 @st.cache_resource
 def load_xgb_model(model_json_path: str):
-    """Load model XGBoost dari file JSON."""
     model = xgb.Booster()
     model.load_model(str(model_json_path))
     return model
-
-
-def get_available_models():
-    """Dapatkan daftar model tersedia dari registry."""
-    registry = load_model_registry()
-    models_dict = registry.get("models", {})
-    return {
-        key: info["display_name"] 
-        for key, info in models_dict.items()
-    }
-
-
-# === Tambahan helper untuk Home/Dashboard ===
-@st.cache_data
-def load_deployment_metadata():
-    metadata_path = find_artifact("deployment_metadata.json")
-    with open(metadata_path, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@st.cache_data
-def load_input_schema():
-    schema_path = find_artifact("input_schema.csv")
-    return pd.read_csv(schema_path)
 
 
 @st.cache_data
@@ -622,15 +230,16 @@ def load_metrics_registry():
 try:
     imputer, scaler, feature_order = load_shared_artifacts()
     registry = load_model_registry()
-    available_models = get_available_models()
+    metrics_df = load_metrics_registry()
+
 except Exception as e:
-    st.error("Artefak model belum lengkap atau gagal dimuat.")
+    st.error("Artefak gagal dimuat.")
     st.exception(e)
     st.stop()
 
 
 # =====================================================
-# Informasi Fitur dan Nilai Default
+# DEFAULT VALUES
 # =====================================================
 DEFAULT_VALUES = {
     "ph": 7.0,
@@ -652,382 +261,480 @@ FEATURE_DESCRIPTIONS = {
     "Sulfate": "Kadar sulfat dalam air.",
     "Conductivity": "Kemampuan air menghantarkan listrik.",
     "Organic_carbon": "Kandungan karbon organik.",
-    "Trihalomethanes": "Kadar senyawa trihalometana.",
+    "Trihalomethanes": "Kadar trihalometana.",
     "Turbidity": "Tingkat kekeruhan air.",
 }
 
 
 # =====================================================
-# Fungsi Prediksi
+# HELPER FUNCTIONS
 # =====================================================
-def build_input_df(input_values: dict, feature_order: list[str]) -> pd.DataFrame:
-    """Menyusun input user sesuai urutan fitur saat training."""
-    row = {feature: input_values.get(feature, np.nan) for feature in feature_order}
+def build_input_df(input_values, feature_order):
+    row = {
+        feature: input_values.get(feature, np.nan)
+        for feature in feature_order
+    }
+
     return pd.DataFrame([row], columns=feature_order)
 
 
 def predict_xgb_booster(model, dmatrix, best_iteration=None):
-    """
-    Prediksi XGBoost Booster dengan best_iteration jika tersedia.
-    best_iteration digunakan untuk memastikan prediksi konsisten dengan evaluasi.
-    """
+
     if best_iteration is not None and best_iteration >= 0:
         try:
-            return model.predict(dmatrix, iteration_range=(0, int(best_iteration) + 1))
-        except (TypeError, Exception):
+            return model.predict(
+                dmatrix,
+                iteration_range=(0, int(best_iteration) + 1)
+            )
+
+        except Exception:
             pass
+
     return model.predict(dmatrix)
 
 
-def predict_quality(input_df: pd.DataFrame, model, best_iteration=None):
-    """Melakukan preprocessing dan prediksi menggunakan artefak hasil training."""
+def predict_quality(input_df, model, best_iteration=None):
+
     imputed = imputer.transform(input_df)
     scaled = scaler.transform(imputed)
-    dmatrix = xgb.DMatrix(scaled, feature_names=feature_order)
-    
-    probability = float(predict_xgb_booster(model, dmatrix, best_iteration)[0])
-    threshold = float(registry.get("prediction_threshold", 0.5))
+
+    dmatrix = xgb.DMatrix(
+        scaled,
+        feature_names=feature_order
+    )
+
+    probability = float(
+        predict_xgb_booster(
+            model,
+            dmatrix,
+            best_iteration
+        )[0]
+    )
+
+    threshold = 0.5
+
     predicted_class = int(probability > threshold)
-    
-    class_mapping = registry.get("class_mapping", {"0": "Tidak Layak Minum", "1": "Layak Minum"})
-    label = class_mapping.get(str(predicted_class), str(predicted_class))
-    return predicted_class, label, probability, threshold
+
+    class_mapping = {
+        "0": "Tidak Layak Minum",
+        "1": "Layak Minum"
+    }
+
+    label = class_mapping.get(
+        str(predicted_class),
+        str(predicted_class)
+    )
+
+    return predicted_class, label, probability
 
 
 # =====================================================
-# Sidebar: Navigasi & Model Selection
+# SIDEBAR
 # =====================================================
 with st.sidebar:
+
     st.markdown("## Navigasi")
-    page = st.radio("Pilih Halaman", ["Home", "Dashboard", "Prediksi"])
+
+    page = st.radio(
+        "Pilih Halaman",
+        ["Home", "Prediksi"]
+    )
+
     st.divider()
 
-    st.markdown("### 📊 Pilih Model")
-    st.markdown(
-        '<p class="section-lead">Terdapat 6 model tersedia dengan kombinasi split data dan metode tuning.</p>',
-        unsafe_allow_html=True,
+    st.markdown("### 📊 Pilih Split Data")
+
+    available_splits = sorted(
+        metrics_df["split"].unique().tolist()
     )
-    
-    # Group models by split and model_type
-    model_options_by_split = {}
-    for model_key, display_name in available_models.items():
-        model_info = registry["models"][model_key]
-        split = model_info.get("split", "unknown")
-        if split not in model_options_by_split:
-            model_options_by_split[split] = []
-        model_options_by_split[split].append((model_key, display_name, model_info))
-    
-    # Sort splits
-    sorted_splits = sorted(model_options_by_split.keys())
-    
+
     selected_split = st.selectbox(
-        "Pilih Split Data:",
-        sorted_splits,
-        key="split_selector"
+        "Split Data",
+        available_splits
     )
-    
-    models_in_split = model_options_by_split[selected_split]
-    selected_model_key = st.selectbox(
-        "Pilih Model:",
-        [key for key, _, _ in models_in_split],
-        format_func=lambda key: next((name for k, name, _ in models_in_split if k == key), key),
-        key="model_selector"
-    )
-    
-    selected_model_info = registry["models"][selected_model_key]
-    
-    # Display model details
-    st.divider()
-    st.markdown("### 📈 Detail Model")
-    st.write(f"**Key:** `{selected_model_key}`")
-    st.write(f"**Tipe:** {selected_model_info.get('model_type', 'N/A').upper()}")
-    st.write(f"**Split:** {selected_model_info.get('split', 'N/A')}")
-    
-    st.markdown("#### Metrik")
-    metrics = selected_model_info.get("metrics", {})
-    col1, col2 = st.columns(2)
-    with col1:
-        st.metric("Accuracy", f"{metrics.get('accuracy', 0):.4f}")
-        st.metric("Precision", f"{metrics.get('precision', 0):.4f}")
-    with col2:
-        st.metric("Recall", f"{metrics.get('recall', 0):.4f}")
-        st.metric("F1-Score", f"{metrics.get('f1_score', 0):.4f}")
-    
-    st.markdown("#### Training Info")
-    st.write(f"**Best Iteration:** {selected_model_info.get('best_iteration', 'N/A')}")
-    st.write(f"**Best Score:** {selected_model_info.get('best_score', 'N/A'):.6f}")
-    st.write(f"**Training Time:** {selected_model_info.get('training_time_seconds', 'N/A'):.2f}s")
-    
-    st.divider()
-    with st.expander("Artefak yang digunakan"):
-        st.write("- model_registry.json")
-        st.write("- feature_order.json")
-        st.write("- feature_imputer.joblib")
-        st.write("- minmax_scaler.joblib")
-        st.write(f"- models/{selected_model_key}.json")
-        st.write(f"- models/{selected_model_key}.joblib")
-
-
-# Load selected model
-model_json_path = find_artifact(selected_model_info["model_json"])
-selected_model = load_xgb_model(model_json_path)
-best_iteration = selected_model_info.get("best_iteration")
 
 
 # =====================================================
-# Halaman Home
+# LOAD MODELS
+# =====================================================
+baseline_model_info = None
+optuna_model_info = None
+
+for model_key, model_info in registry["models"].items():
+
+    model_type = model_info.get("model_type", "").lower()
+    split = model_info.get("split")
+
+    if split == selected_split:
+
+        if "optuna" in model_type:
+            optuna_model_info = model_info
+
+        else:
+            baseline_model_info = model_info
+
+
+if optuna_model_info is None:
+    st.error("Model Optuna tidak ditemukan.")
+    st.stop()
+
+model_json_path = find_artifact(
+    optuna_model_info["model_json"]
+)
+
+selected_model = load_xgb_model(model_json_path)
+
+best_iteration = optuna_model_info.get(
+    "best_iteration"
+)
+
+
+# =====================================================
+# HOME PAGE
 # =====================================================
 def render_home():
-    metadata = load_deployment_metadata()
-    schema_df = load_input_schema()
-
     st.markdown(
-        f"""
+        """
         <section class="hero">
-            <span class="eyebrow">{metadata.get("project_name", "Water Potability Prediction")}</span>
-            <h1>Ringkasan Proyek</h1>
+            <span class="eyebrow">Water Potability Prediction</span>
+
+            <h1>Prediksi Kualitas Air Minum</h1>
+
             <p>
-            Model memprediksi kelayakan air minum berdasarkan 9 parameter kimia.
-            Target klasifikasi: <strong>{metadata.get("target_column", "Potability")}</strong>.
+            Sistem prediksi kualitas air minum menggunakan
+            algoritma XGBoost dan optimasi hyperparameter Optuna
+            berdasarkan parameter kimia air.
             </p>
         </section>
         """,
         unsafe_allow_html=True,
     )
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Jumlah Model", metadata.get("available_model_count", 0))
-    col2.metric("Threshold", metadata.get("prediction_threshold", 0.5))
-    col3.metric("Random State", metadata.get("random_state", 0))
+    col1, col2 = st.columns(2)
 
-    st.markdown("### Versi Library")
-    versions = metadata.get("library_versions", {})
-    st.write(f"- Python: `{versions.get('python','-')}`")
-    st.write(f"- NumPy: `{versions.get('numpy','-')}`")
-    st.write(f"- Pandas: `{versions.get('pandas','-')}`")
-    st.write(f"- Scikit-learn: `{versions.get('sklearn','-')}`")
-    st.write(f"- XGBoost: `{versions.get('xgboost','-')}`")
+    col1.metric(
+        "Jumlah Model",
+        len(registry["models"])
+    )
 
-    st.markdown("### Fitur Input & Statistik")
-    st.dataframe(schema_df, use_container_width=True)
+    col2.metric(
+        "Jumlah Fitur",
+        len(feature_order)
+    )
+
+    st.markdown("### Parameter Input")
+
+    feature_df = pd.DataFrame({
+        "Fitur": list(FEATURE_DESCRIPTIONS.keys()),
+        "Deskripsi": list(FEATURE_DESCRIPTIONS.values())
+    })
+
+    st.dataframe(
+        feature_df,
+        use_container_width=True
+    )
 
     st.markdown("### Kelas Output")
-    class_mapping = metadata.get("class_mapping", {})
-    st.write(f"- 0 → **{class_mapping.get('0', 'Tidak Layak Minum')}**")
-    st.write(f"- 1 → **{class_mapping.get('1', 'Layak Minum')}**")
 
-    st.caption(f"Exported at: {metadata.get('exported_at', '-')}")
+    st.write("0 → Tidak Layak Minum")
+    st.write("1 → Layak Minum")
 
 
 # =====================================================
-# Halaman Dashboard
+# MODEL COMPARISON
 # =====================================================
-def render_dashboard():
-    metrics_df = load_metrics_registry()
+def render_model_comparison(selected_split):
 
-    st.markdown(
-        """
-        <section class="hero">
-            <span class="eyebrow">Dashboard</span>
-            <h1>Performa Model</h1>
-            <p>
-            Ringkasan metrik dari semua model yang tersedia di registry.
-            </p>
-        </section>
-        """,
-        unsafe_allow_html=True,
-    )
+    split_df = metrics_df[
+        metrics_df["split"] == selected_split
+    ]
 
-    # Ringkasan best model (berdasarkan F1)
-    best_row = metrics_df.sort_values("f1_score", ascending=False).iloc[0]
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Best Model (F1)", best_row["display_name"])
-    c2.metric("F1-Score", f"{best_row['f1_score']:.4f}")
-    c3.metric("Accuracy", f"{best_row['accuracy']:.4f}")
+    baseline_df = split_df[
+        split_df["model_type"]
+        .str.contains("baseline", case=False)
+    ]
 
-    st.markdown("### Tabel Metrik Semua Model")
-    st.dataframe(metrics_df, use_container_width=True)
+    optuna_df = split_df[
+        split_df["model_type"]
+        .str.contains("optuna", case=False)
+    ]
 
-    st.markdown("### Perbandingan F1-Score")
-    chart_df = metrics_df[["display_name", "f1_score"]].set_index("display_name")
+    if baseline_df.empty or optuna_df.empty:
+        st.warning(
+            "Perbandingan baseline dan Optuna belum tersedia."
+        )
+        return
+
+    baseline = baseline_df.iloc[0]
+    optuna = optuna_df.iloc[0]
+
+    comparison_df = pd.DataFrame({
+        "Metric": [
+            "Accuracy",
+            "Precision",
+            "Recall",
+            "F1-Score"
+        ],
+
+        "XGBoost Baseline": [
+            baseline["accuracy"],
+            baseline["precision"],
+            baseline["recall"],
+            baseline["f1_score"]
+        ],
+
+        "XGBoost + Optuna": [
+            optuna["accuracy"],
+            optuna["precision"],
+            optuna["recall"],
+            optuna["f1_score"]
+        ]
+    })
+
+    st.markdown("## Perbandingan Performa Model")
+
+    chart_df = comparison_df.set_index("Metric")
+
     st.bar_chart(chart_df)
 
-    st.markdown("### Perbandingan Accuracy")
-    acc_df = metrics_df[["display_name", "accuracy"]].set_index("display_name")
-    st.bar_chart(acc_df)
+    st.dataframe(
+        comparison_df,
+        use_container_width=True
+    )
 
-    st.markdown("### Confusion Matrix (Semua Model)")
-    for model_key, model_info in registry.get("models", {}).items():
-        cm = model_info.get("confusion_matrix", {})
-        st.markdown(f"**{model_info.get('display_name', model_key)}**")
-        if cm:
-            cm_df = pd.DataFrame(
+    improvement = (
+        (
+            optuna["f1_score"]
+            - baseline["f1_score"]
+        )
+        / baseline["f1_score"]
+    ) * 100
+
+    st.metric(
+        "Peningkatan F1-Score Optuna",
+        f"{improvement:.2f}%"
+    )
+
+    st.success(
+        "Model XGBoost + Optuna memberikan performa terbaik berdasarkan F1-Score."
+    )
+
+    st.markdown("## Confusion Matrix")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        st.markdown("### XGBoost Baseline")
+
+        baseline_cm = baseline.get(
+            "confusion_matrix",
+            {}
+        )
+
+        baseline_cm_df = pd.DataFrame(
+            [
                 [
-                    [cm.get("tn", 0), cm.get("fp", 0)],
-                    [cm.get("fn", 0), cm.get("tp", 0)],
+                    baseline_cm.get("tn", 0),
+                    baseline_cm.get("fp", 0)
                 ],
-                index=["Actual: Tidak Layak", "Actual: Layak"],
-                columns=["Pred: Tidak Layak", "Pred: Layak"],
-            )
-            st.dataframe(cm_df, use_container_width=True)
-        else:
-            st.info("Confusion matrix belum tersedia untuk model ini.")
+                [
+                    baseline_cm.get("fn", 0),
+                    baseline_cm.get("tp", 0)
+                ]
+            ],
+
+            index=[
+                "Actual Tidak Layak",
+                "Actual Layak"
+            ],
+
+            columns=[
+                "Pred Tidak Layak",
+                "Pred Layak"
+            ]
+        )
+
+        st.dataframe(
+            baseline_cm_df,
+            use_container_width=True
+        )
+
+    with col2:
+
+        st.markdown("### XGBoost + Optuna")
+
+        optuna_cm = optuna.get(
+            "confusion_matrix",
+            {}
+        )
+
+        optuna_cm_df = pd.DataFrame(
+            [
+                [
+                    optuna_cm.get("tn", 0),
+                    optuna_cm.get("fp", 0)
+                ],
+                [
+                    optuna_cm.get("fn", 0),
+                    optuna_cm.get("tp", 0)
+                ]
+            ],
+
+            index=[
+                "Actual Tidak Layak",
+                "Actual Layak"
+            ],
+
+            columns=[
+                "Pred Tidak Layak",
+                "Pred Layak"
+            ]
+        )
+
+        st.dataframe(
+            optuna_cm_df,
+            use_container_width=True
+        )
 
 
 # =====================================================
-# Halaman Prediksi
+# PREDICTION PAGE
 # =====================================================
 def render_prediction():
+
     st.markdown(
         """
         <section class="hero">
-            <span class="eyebrow">Prediksi Kualitas Air</span>
-            <h1>Masukkan Parameter, Dapatkan Hasil</h1>
+
+            <span class="eyebrow">
+            Prediksi Kualitas Air
+            </span>
+
+            <h1>
+            Masukkan Parameter Air
+            </h1>
+
             <p>
-            Halaman ini difokuskan untuk prediksi tunggal secepat mungkin.
-            Isi nilai parameter di kiri, lalu lihat hasil prediksi di kanan.
+            Isi nilai parameter sampel air untuk
+            mendapatkan hasil prediksi kualitas air
+            serta perbandingan performa model.
             </p>
+
         </section>
         """,
         unsafe_allow_html=True,
     )
 
-    input_col, result_col = st.columns([1.2, 0.8], gap="large")
+    input_col, result_col = st.columns(
+        [1.2, 0.8],
+        gap="large"
+    )
 
     submitted = False
-    input_df = None
-    predicted_class = None
-    label = ""
-    probability = 0.0
-    threshold = float(registry.get("prediction_threshold", 0.5))
 
     with input_col:
-        st.subheader("1) Input Parameter")
-        st.markdown(
-            '<p class="section-lead">Isi nilai parameter berikut sesuai kondisi sampel air yang ingin diprediksi.</p>',
-            unsafe_allow_html=True,
-        )
+
+        st.subheader("Input Parameter")
 
         with st.form("prediction_form"):
+
             input_values = {}
-            cols = st.columns(3, gap="medium")
+
+            cols = st.columns(3)
+
             for idx, feature in enumerate(feature_order):
+
                 with cols[idx % 3]:
+
                     input_values[feature] = st.number_input(
                         label=feature,
-                        value=float(DEFAULT_VALUES.get(feature, 0.0)),
+
+                        value=float(
+                            DEFAULT_VALUES.get(
+                                feature,
+                                0.0
+                            )
+                        ),
+
                         step=0.01,
+
                         format="%.4f",
-                        help=FEATURE_DESCRIPTIONS.get(feature, "Masukkan nilai fitur sesuai dataset training."),
+
+                        help=FEATURE_DESCRIPTIONS.get(
+                            feature,
+                            ""
+                        ),
                     )
 
-            submitted = st.form_submit_button("Prediksi Sekarang")
-
-        st.markdown("</div>", unsafe_allow_html=True)
+            submitted = st.form_submit_button(
+                "Prediksi Sekarang"
+            )
 
     with result_col:
-        st.subheader("2) Hasil Prediksi")
+
+        st.subheader("Hasil Prediksi")
 
         if submitted:
-            input_df = build_input_df(input_values, feature_order)
-            predicted_class, label, probability, threshold = predict_quality(
-                input_df,
-                selected_model,
-                best_iteration
+
+            input_df = build_input_df(
+                input_values,
+                feature_order
+            )
+
+            predicted_class, label, probability = (
+                predict_quality(
+                    input_df,
+                    selected_model,
+                    best_iteration
+                )
             )
 
             if predicted_class == 1:
                 st.success(f"Prediksi: {label}")
+
             else:
                 st.error(f"Prediksi: {label}")
 
-            st.metric("Probabilitas layak minum", f"{probability:.4f}")
-            st.progress(min(max(probability, 0.0), 1.0))
+            st.metric(
+                "Probabilitas Layak Minum",
+                f"{probability:.4f}"
+            )
 
-            d1, d2 = st.columns(2, gap="small")
-            with d1:
-                st.markdown(
-                    f"""
-                    <div class="summary-card">
-                        <strong>Threshold</strong>
-                        <span>{threshold}</span>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-            with d2:
-                st.markdown(
-                    f"""
-                    <div class="summary-card">
-                        <strong>Label</strong>
-                        <span>{label}</span>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
+            st.progress(
+                min(max(probability, 0.0), 1.0)
+            )
+
+            st.markdown(
+                f"""
+                <div class="summary-card">
+                    <strong>Hasil Klasifikasi</strong>
+                    <span>{label}</span>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
         else:
-            st.info("Belum ada hasil. Isi parameter lalu klik **Prediksi Sekarang**.")
 
-        st.markdown("</div>", unsafe_allow_html=True)
+            st.info(
+                "Masukkan parameter lalu klik Prediksi Sekarang."
+            )
 
-    if submitted and input_df is not None:
-        with st.expander("Lihat detail input dan preprocessing"):
-            st.write("**Input sesuai feature order:**")
-            st.dataframe(input_df, use_container_width=True)
-            st.write(f"Threshold klasifikasi: `{threshold}`")
-            st.write("Aturan: probabilitas > threshold diklasifikasikan sebagai `Layak Minum`.")
+    if submitted:
 
-    with st.expander("Prediksi batch CSV (opsional)"):
-        st.markdown(
-            '<p class="section-lead">Upload CSV hanya jika Anda ingin prediksi banyak data sekaligus.</p>',
-            unsafe_allow_html=True,
+        st.divider()
+
+        render_model_comparison(
+            selected_split
         )
-        uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
-
-        if uploaded_file is not None:
-            try:
-                batch_df = pd.read_csv(uploaded_file)
-                missing_cols = [col for col in feature_order if col not in batch_df.columns]
-
-                if missing_cols:
-                    st.error(f"Kolom berikut belum ada pada CSV: {missing_cols}")
-                else:
-                    batch_input = batch_df[feature_order].copy()
-                    imputed = imputer.transform(batch_input)
-                    scaled = scaler.transform(imputed)
-                    dmatrix = xgb.DMatrix(scaled, feature_names=feature_order)
-
-                    probabilities = predict_xgb_booster(selected_model, dmatrix, best_iteration)
-                    threshold_batch = float(registry.get("prediction_threshold", 0.5))
-                    predictions = (probabilities > threshold_batch).astype(int)
-                    class_mapping = registry.get("class_mapping", {"0": "Tidak Layak Minum", "1": "Layak Minum"})
-
-                    result_df = batch_df.copy()
-                    result_df["probabilitas_layak_minum"] = probabilities
-                    result_df["prediksi_kelas"] = predictions
-                    result_df["prediksi_label"] = [class_mapping.get(str(pred), str(pred)) for pred in predictions]
-
-                    st.success("Prediksi batch berhasil diproses.")
-                    st.dataframe(result_df, use_container_width=True)
-
-                    csv_result = result_df.to_csv(index=False).encode("utf-8")
-                    st.download_button(
-                        label="Download Hasil Prediksi CSV",
-                        data=csv_result,
-                        file_name="hasil_prediksi_kualitas_air.csv",
-                        mime="text/csv",
-                    )
-            except Exception as e:
-                st.error("Gagal memproses file CSV.")
-                st.exception(e)
 
 
 # =====================================================
-# Routing Halaman
+# ROUTING
 # =====================================================
 if page == "Home":
     render_home()
-elif page == "Dashboard":
-    render_dashboard()
+
 elif page == "Prediksi":
     render_prediction()
