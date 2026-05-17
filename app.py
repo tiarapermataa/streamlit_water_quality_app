@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 import joblib
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -895,28 +896,7 @@ def render_prediction():
         st.divider()
         metrics_df = load_metrics_registry()
 
-        # ==========================================
-        # Custom urutan model
-        # ==========================================
-        custom_order = [
-            "Baseline Split 60:40",
-            "Optuna Split 60:40",
-            "Baseline Split 70:30",
-            "Optuna Split 70:30",
-            "Baseline Split 80:20",
-            "Optuna Split 80:20",
-        ]
-
-        metrics_df["display_name"] = pd.Categorical(
-            metrics_df["display_name"],
-            categories=custom_order,
-            ordered=True
-        )
-
-        metrics_df = metrics_df.sort_values("display_name")
-
         st.markdown(
-
             """
             <section class="hero">
                 <span class="eyebrow">Dashboard</span>
@@ -965,108 +945,94 @@ def render_prediction():
         st.markdown("### Tabel Metrik Semua Model")
         st.dataframe(metrics_display, use_container_width=True)
 
-        st.markdown("### Perbandingan Performa 6 Model")
+        st.markdown("### Perbandingan Performa Model")
 
-        # ==========================================
-        # Accuracy
-        # ==========================================
-        st.markdown("#### Accuracy")
+        metric_keys = ["accuracy", "precision", "recall", "f1_score"]
+        metric_titles = ["Accuracy", "Precision", "Recall", "F1-Score"]
+        models_dict = registry.get("models", {})
 
-        accuracy_df = metrics_df[
-            ["display_name", "accuracy"]
-        ].rename(
-            columns={
-                "display_name": "Model",
-                "accuracy": "Accuracy"
-            }
-        ).set_index("Model")
+        # Consistent order: alternating baseline/optuna per split
+        model_order = [
+            "baseline_split_60_40", "optuna_split_60_40",
+            "baseline_split_70_30", "optuna_split_70_30",
+            "baseline_split_80_20", "optuna_split_80_20",
+        ]
+        model_order = [k for k in model_order if k in models_dict]
 
-        st.bar_chart(
-            accuracy_df,
-            horizontal=True,
-            use_container_width=True
-        )
+        model_names = [models_dict[k]["display_name"] for k in model_order]
+        colors = ["#7B8BD4", "#8BC78B", "#7B8BD4", "#8BC78B", "#7B8BD4", "#8BC78B"]
 
-        # ==========================================
-        # Precision
-        # ==========================================
-        st.markdown("#### Precision")
+        for mkey, mtitle in zip(metric_keys, metric_titles):
+            values = [models_dict[k]["metrics"].get(mkey, 0) for k in model_order]
 
-        precision_df = metrics_df[
-            ["display_name", "precision"]
-        ].rename(
-            columns={
-                "display_name": "Model",
-                "precision": "Precision"
-            }
-        ).set_index("Model")
+            fig, ax = plt.subplots(figsize=(9, 3.5))
+            bars = ax.barh(model_names, values, color=colors[:len(model_order)])
 
-        st.bar_chart(
-            precision_df,
-            horizontal=True,
-            use_container_width=True
-        )
+            # Add value labels on bars
+            for bar, val in zip(bars, values):
+                ax.text(bar.get_width() + 0.005, bar.get_y() + bar.get_height() / 2,
+                        f"{val:.4f}", va="center", fontsize=10)
 
-        # ==========================================
-        # Recall
-        # ==========================================
-        st.markdown("#### Recall")
+            ax.set_xlim(0, 1.05)
+            ax.set_xlabel("Score")
+            ax.set_title(mtitle)
+            ax.invert_yaxis()
+            fig.tight_layout()
 
-        recall_df = metrics_df[
-            ["display_name", "recall"]
-        ].rename(
-            columns={
-                "display_name": "Model",
-                "recall": "Recall"
-            }
-        ).set_index("Model")
-
-        st.bar_chart(
-            recall_df,
-            horizontal=True,
-            use_container_width=True
-        )
-
-        # ==========================================
-        # F1-Score
-        # ==========================================
-        st.markdown("#### F1-Score")
-
-        f1_df = metrics_df[
-            ["display_name", "f1_score"]
-        ].rename(
-            columns={
-                "display_name": "Model",
-                "f1_score": "F1-Score"
-            }
-        ).set_index("Model")
-
-        st.bar_chart(
-            f1_df,
-            horizontal=True,
-            use_container_width=True
-        )
+            st.pyplot(fig)
+            plt.close(fig)
 
         st.markdown("### Confusion Matrix (Semua Model)")
-        for model_key, model_info in registry.get("models", {}).items():
-            cm = model_info.get("confusion_matrix", {})
-            st.markdown(f"**{model_info.get('display_name', model_key)}**")
-            if cm:
-                cm_df = pd.DataFrame(
-                    [
-                        [cm.get("tn", 0), cm.get("fp", 0)],
-                        [cm.get("fn", 0), cm.get("tp", 0)],
-                    ],
-                    index=["Actual: Tidak Layak", "Actual: Layak"],
-                    columns=["Pred: Tidak Layak", "Pred: Layak"],
+
+        splits = ["60:40", "70:30", "80:20"]
+        model_types = ["baseline", "optuna"]
+        type_labels = {"baseline": "Baseline", "optuna": "Optuna"}
+        models_dict = registry.get("models", {})
+        labels = ["Tidak Layak", "Layak"]
+
+        fig, axes = plt.subplots(2, 3, figsize=(14, 8))
+
+        for row, mtype in enumerate(model_types):
+            for col, split in enumerate(splits):
+                ax = axes[row][col]
+                # Find matching model
+                info = next(
+                    (v for v in models_dict.values()
+                     if v.get("model_type") == mtype and v.get("split") == split),
+                    None,
                 )
-                st.dataframe(cm_df, use_container_width=True)
-            else:
-                st.info("Confusion matrix belum tersedia untuk model ini.")
+                if not info or not info.get("confusion_matrix"):
+                    ax.set_visible(False)
+                    continue
+
+                cm = info["confusion_matrix"]
+                cm_array = np.array([
+                    [cm.get("tn", 0), cm.get("fp", 0)],
+                    [cm.get("fn", 0), cm.get("tp", 0)],
+                ])
+
+                im = ax.imshow(cm_array, cmap="Blues")
+                ax.set_xticks([0, 1])
+                ax.set_yticks([0, 1])
+                ax.set_xticklabels(labels)
+                ax.set_yticklabels(labels)
+                ax.set_xlabel("Predicted")
+                ax.set_ylabel("Actual")
+                ax.set_title(f"{type_labels[mtype]} — Split {split}")
+
+                for i in range(2):
+                    for j in range(2):
+                        color = "white" if cm_array[i, j] > cm_array.max() / 2 else "black"
+                        ax.text(j, i, str(cm_array[i, j]),
+                                ha="center", va="center", color=color,
+                                fontsize=14, fontweight="bold")
+
+        fig.tight_layout(pad=2.0)
+        st.pyplot(fig)
+        plt.close(fig)
 
 
 # =====================================================
 # Render Halaman Prediksi
 # =====================================================
 render_prediction()
-
