@@ -679,7 +679,7 @@ DEFAULT_VALUES = {
     "Chloramines": 7.0,
     "Sulfate": 330.0,
     "Conductivity": 425.0,
-    "Organic_carbon": 14.0,
+    "Organic carbon": 14.0,
     "Trihalomethanes": 66.0,
     "Turbidity": 4.0,
 }
@@ -893,7 +893,7 @@ def render_prediction():
                     unsafe_allow_html=True,
                 )
         else:
-            st.info("Belum ada hasil. Isi parameter lalu klik **Prediksi Sekarang**.")
+            st.info("Belum ada hasil. Isi parameter lalu klik **Klasifikasi Sekarang**.")
 
         st.markdown("</div>", unsafe_allow_html=True)
 
