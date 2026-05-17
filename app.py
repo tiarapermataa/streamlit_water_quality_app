@@ -941,48 +941,90 @@ def render_prediction():
             f"{best_row['f1_score']:.4f}"
         )
 
+        st.markdown("### Tabel Metrik Semua Model")
+        st.dataframe(metrics_display, use_container_width=True)
+
         st.markdown("### Perbandingan Performa 6 Model")
 
-        # =========================
-        # Data Metrics
-        # =========================
-        comparison_chart_df = metrics_df[
-            ["display_name", "accuracy", "precision", "recall", "f1_score"]
-        ].copy()
+        # ==========================================
+        # Accuracy
+        # ==========================================
+        st.markdown("#### Accuracy")
 
-        # Rename agar lebih rapi di chart
-        comparison_chart_df = comparison_chart_df.rename(
+        accuracy_df = metrics_df[
+            ["display_name", "accuracy"]
+        ].rename(
             columns={
                 "display_name": "Model",
-                "accuracy": "Accuracy",
-                "precision": "Precision",
-                "recall": "Recall",
-                "f1_score": "F1-Score",
+                "accuracy": "Accuracy"
             }
-        )
+        ).set_index("Model")
 
-        # Ubah format supaya horizontal grouped bar chart
-        chart_data = comparison_chart_df.melt(
-            id_vars="Model",
-            var_name="Metric",
-            value_name="Score"
-        )
-
-        # =========================
-        # Chart
-        # =========================
         st.bar_chart(
-            data=chart_data,
-            x="Metric",
-            y="Score",
-            color="Model",
+            accuracy_df,
             horizontal=True,
             use_container_width=True
         )
 
-        st.markdown("### Perbandingan Accuracy")
-        acc_df = metrics_df[["display_name", "accuracy"]].set_index("display_name")
-        st.bar_chart(acc_df)
+        # ==========================================
+        # Precision
+        # ==========================================
+        st.markdown("#### Precision")
+
+        precision_df = metrics_df[
+            ["display_name", "precision"]
+        ].rename(
+            columns={
+                "display_name": "Model",
+                "precision": "Precision"
+            }
+        ).set_index("Model")
+
+        st.bar_chart(
+            precision_df,
+            horizontal=True,
+            use_container_width=True
+        )
+
+        # ==========================================
+        # Recall
+        # ==========================================
+        st.markdown("#### Recall")
+
+        recall_df = metrics_df[
+            ["display_name", "recall"]
+        ].rename(
+            columns={
+                "display_name": "Model",
+                "recall": "Recall"
+            }
+        ).set_index("Model")
+
+        st.bar_chart(
+            recall_df,
+            horizontal=True,
+            use_container_width=True
+        )
+
+        # ==========================================
+        # F1-Score
+        # ==========================================
+        st.markdown("#### F1-Score")
+
+        f1_df = metrics_df[
+            ["display_name", "f1_score"]
+        ].rename(
+            columns={
+                "display_name": "Model",
+                "f1_score": "F1-Score"
+            }
+        ).set_index("Model")
+
+        st.bar_chart(
+            f1_df,
+            horizontal=True,
+            use_container_width=True
+        )
 
         st.markdown("### Confusion Matrix (Semua Model)")
         for model_key, model_info in registry.get("models", {}).items():
