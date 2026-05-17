@@ -895,7 +895,28 @@ def render_prediction():
         st.divider()
         metrics_df = load_metrics_registry()
 
+        # ==========================================
+        # Custom urutan model
+        # ==========================================
+        custom_order = [
+            "Baseline Split 60:40",
+            "Optuna Split 60:40",
+            "Baseline Split 70:30",
+            "Optuna Split 70:30",
+            "Baseline Split 80:20",
+            "Optuna Split 80:20",
+        ]
+
+        metrics_df["display_name"] = pd.Categorical(
+            metrics_df["display_name"],
+            categories=custom_order,
+            ordered=True
+        )
+
+        metrics_df = metrics_df.sort_values("display_name")
+
         st.markdown(
+
             """
             <section class="hero">
                 <span class="eyebrow">Dashboard</span>
