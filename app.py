@@ -566,8 +566,13 @@ def find_artifact(filename: str) -> Path:
 # =====================================================
 # Load Artefak Deployment (Multi-Model)
 # =====================================================
+def _artifact_mtime(*filenames: str) -> tuple:
+    """Return modification timestamps for artifact files (used as cache key)."""
+    return tuple(find_artifact(f).stat().st_mtime for f in filenames)
+
+
 @st.cache_resource
-def load_shared_artifacts():
+def load_shared_artifacts(_mtimes: tuple = ()):
     """Load artefak yang digunakan bersama semua model."""
     feature_order_path = find_artifact("feature_order.json")
     imputer_path = find_artifact("feature_imputer.joblib")
@@ -610,7 +615,7 @@ def load_shared_artifacts():
 
 
 @st.cache_resource
-def load_model_registry():
+def load_model_registry(_mtime: tuple = ()):
     """Load registry untuk semua model tersedia."""
     try:
         registry_path = find_artifact("model_registry.json")
@@ -623,7 +628,7 @@ def load_model_registry():
 
 
 @st.cache_resource
-def load_xgb_model(model_json_path: str):
+def load_xgb_model(model_json_path: str, _mtime: float = 0.0):
     """Load model XGBoost dari file JSON."""
     model = xgb.Booster()
     model.load_model(str(model_json_path))
@@ -632,7 +637,9 @@ def load_xgb_model(model_json_path: str):
 
 def get_available_models():
     """Dapatkan daftar model tersedia dari registry."""
-    registry = load_model_registry()
+    registry = load_model_registry(
+        _mtime=_artifact_mtime("model_registry.json"),
+    )
     models_dict = registry.get("models", {})
     return {
         key: info["display_name"] 
@@ -643,14 +650,18 @@ def get_available_models():
 
 
 @st.cache_data
-def load_metrics_registry():
+def load_metrics_registry(_mtime: tuple = ()):
     metrics_path = find_artifact("model_metrics_registry.csv")
     return pd.read_csv(metrics_path)
 
 
 try:
-    imputer, scaler, feature_order = load_shared_artifacts()
-    registry = load_model_registry()
+    imputer, scaler, feature_order = load_shared_artifacts(
+        _mtimes=_artifact_mtime("feature_order.json", "feature_imputer.joblib", "minmax_scaler.joblib"),
+    )
+    registry = load_model_registry(
+        _mtime=_artifact_mtime("model_registry.json"),
+    )
     available_models = get_available_models()
 except Exception as e:
     st.error("Artefak model belum lengkap atau gagal dimuat.")
@@ -785,7 +796,7 @@ with st.sidebar:
 
 # Load selected model
 model_json_path = find_artifact(selected_model_info["model_json"])
-selected_model = load_xgb_model(model_json_path)
+selected_model = load_xgb_model(model_json_path, _mtime=model_json_path.stat().st_mtime)
 best_iteration = selected_model_info.get("best_iteration")
 
 
@@ -894,7 +905,9 @@ def render_prediction():
 
         # ── Dashboard ditampilkan di bawah hasil prediksi ──
         st.divider()
-        metrics_df = load_metrics_registry()
+        metrics_df = load_metrics_registry(
+            _mtime=_artifact_mtime("model_metrics_registry.csv"),
+        )
 
         st.markdown(
             """
