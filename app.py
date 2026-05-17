@@ -632,18 +632,6 @@ def get_available_models():
     }
 
 
-# === Tambahan helper untuk Home/Dashboard ===
-@st.cache_data
-def load_deployment_metadata():
-    metadata_path = find_artifact("deployment_metadata.json")
-    with open(metadata_path, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@st.cache_data
-def load_input_schema():
-    schema_path = find_artifact("input_schema.csv")
-    return pd.read_csv(schema_path)
 
 
 @st.cache_data
@@ -731,10 +719,6 @@ def predict_quality(input_df: pd.DataFrame, model, best_iteration=None):
 # Sidebar: Navigasi & Model Selection
 # =====================================================
 with st.sidebar:
-    st.markdown("## Navigasi")
-    page = st.radio("Pilih Halaman", ["Home", "Prediksi"])
-    st.divider()
-
     st.markdown("### 📊 Pilih Model")
     st.markdown(
         '<p class="section-lead">Terdapat 6 model tersedia dengan kombinasi split data dan metode tuning.</p>',
@@ -797,41 +781,6 @@ selected_model = load_xgb_model(model_json_path)
 best_iteration = selected_model_info.get("best_iteration")
 
 
-# =====================================================
-# Halaman Home
-# =====================================================
-def render_home():
-    metadata = load_deployment_metadata()
-    schema_df = load_input_schema()
-
-    st.markdown(
-        f"""
-        <section class="hero">
-            <span class="eyebrow">{metadata.get("project_name", "Water Potability Prediction")}</span>
-            <h1>Ringkasan Proyek</h1>
-            <p>
-            Model memprediksi kelayakan air minum berdasarkan 9 parameter kimia.
-            Target klasifikasi: <strong>{metadata.get("target_column", "Potability")}</strong>.
-            </p>
-        </section>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Jumlah Model", metadata.get("available_model_count", 0))
-    col2.metric("Threshold", metadata.get("prediction_threshold", 0.5))
-    col3.metric("Random State", metadata.get("random_state", 0))
-
-    st.markdown("### Fitur Input & Statistik")
-    st.dataframe(schema_df, use_container_width=True)
-
-    st.markdown("### Kelas Output")
-    class_mapping = metadata.get("class_mapping", {})
-    st.write(f"- 0 → **{class_mapping.get('0', 'Tidak Layak Minum')}**")
-    st.write(f"- 1 → **{class_mapping.get('1', 'Layak Minum')}**")
-
-    st.caption(f"Exported at: {metadata.get('exported_at', '-')}")
 
 
 # =====================================================
@@ -989,9 +938,6 @@ def render_prediction():
 
 
 # =====================================================
-# Routing Halaman
+# Render Halaman Prediksi
 # =====================================================
-if page == "Home":
-    render_home()
-elif page == "Prediksi":
-    render_prediction()
+render_prediction()
