@@ -809,8 +809,8 @@ def render_prediction():
     st.markdown(
         """
         <section class="hero">
-            <span class="eyebrow">Prediksi Kualitas Air Minum</span>
-            <h1>Masukkan Parameter, Dapatkan Hasil</h1>
+            <span class="eyebrow">Klasifikasi</span>
+            <h1>Klasifikasi Kualitas Air Minum</h1>
             <p>
             Masukkan nilai setiap parameter kualitas air untuk memperoleh hasil prediksi kelayakan air minum berdasarkan model klasifikasi yang dipilih.
             </p>
@@ -848,12 +848,12 @@ def render_prediction():
                         help=FEATURE_DESCRIPTIONS.get(feature, "Masukkan nilai fitur sesuai dataset training."),
                     )
 
-            submitted = st.form_submit_button("Prediksi Sekarang")
+            submitted = st.form_submit_button("Klasifikasi Sekarang")
 
         st.markdown("</div>", unsafe_allow_html=True)
 
     with result_col:
-        st.subheader("Hasil Prediksi")
+        st.subheader("Hasil Klasifikasi")
 
         if submitted:
             input_df = build_input_df(input_values, feature_order)
@@ -864,9 +864,9 @@ def render_prediction():
             )
 
             if predicted_class == 1:
-                st.success(f"Prediksi: {label}")
+                st.success(f"Klasifikasi: {label}")
             else:
-                st.error(f"Prediksi: {label}")
+                st.error(f"Klasifikasi: {label}")
 
             st.metric("Probabilitas layak minum", f"{probability:.4f}")
             st.progress(min(max(probability, 0.0), 1.0))
