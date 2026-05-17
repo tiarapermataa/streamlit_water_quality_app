@@ -679,7 +679,7 @@ DEFAULT_VALUES = {
     "Chloramines": 7.0,
     "Sulfate": 330.0,
     "Conductivity": 425.0,
-    "Organic carbon": 14.0,
+    "Organic_carbon": 14.0,
     "Trihalomethanes": 66.0,
     "Turbidity": 4.0,
 }
@@ -691,7 +691,7 @@ FEATURE_DESCRIPTIONS = {
     "Chloramines": "Jumlah kloramin yang ditambahkan sebagai disinfektan air minum.",
     "Sulfate": "Konsentrasi ion sulfat terlarut.",
     "Conductivity": "Konduktivitas listrik air yang mencerminkan kandungan ion terlarut.",
-    "Organic carbon": "Jumlah karbon organik terlarut yang mengindikasikan keberadaan bahan organik.",
+    "Organic_carbon": "Jumlah karbon organik terlarut yang mengindikasikan keberadaan bahan organik.",
     "Trihalomethanes": "Konsentrasi trihalometana sebagai produk sampingan proses desinfeksi klorin.",
     "Turbidity": "Tingkat kekeruhan/kejernihan air yang diukur berdasarkan hamburan cahaya.",
 }
