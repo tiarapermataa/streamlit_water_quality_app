@@ -904,12 +904,35 @@ def render_prediction():
         cols_to_hide = ["model_key", "model_json", "model_joblib"]
         metrics_display = metrics_df.drop(columns=cols_to_hide, errors="ignore")
 
-        # Ringkasan best model (berdasarkan F1)
+        # Ringkasan best model
         best_row = metrics_df.sort_values("f1_score", ascending=False).iloc[0]
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Best Model (F1)", best_row["display_name"])
-        c2.metric("F1-Score", f"{best_row['f1_score']:.4f}")
-        c3.metric("Accuracy", f"{best_row['accuracy']:.4f}")
+
+        c1, c2, c3, c4, c5 = st.columns(5)
+
+        c1.metric(
+            "Best Model",
+            best_row["display_name"]
+        )
+
+        c2.metric(
+            "Accuracy",
+            f"{best_row['accuracy']:.4f}"
+        )
+
+        c3.metric(
+            "Precision",
+            f"{best_row['precision']:.4f}"
+        )
+
+        c4.metric(
+            "Recall",
+            f"{best_row['recall']:.4f}"
+        )
+
+        c5.metric(
+            "F1-Score",
+            f"{best_row['f1_score']:.4f}"
+        )
 
         st.markdown("### Tabel Metrik Semua Model")
         st.dataframe(metrics_display, use_container_width=True)
