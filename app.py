@@ -434,12 +434,19 @@ def apply_vercel_theme():
             box-shadow: 0 0 0 1px var(--line);
             border-radius: 14px;
             padding: 16px;
+            min-height: auto;              /* Biarkan grow sesuai konten */
+            overflow: visible;             /* Tampilkan semua */
+            height: auto;                  /* Tidak fixed height */
         }
 
         div[data-testid="stMetric"] [data-testid="stMetricValue"]{
             font-size: 20px;
-            white-space: normal;
-            word-break: break-word;
+            white-space: normal;           /* Wrap text */
+            word-break: break-word;        /* Break long words */
+            overflow-wrap: break-word;     /* Modern standard */
+            overflow: visible;             /* Show all */
+            max-width: 100%;               /* Full width */
+            display: block;                /* Block element untuk wrap */
         }
 
         div[data-testid="stProgress"] > div{
@@ -907,7 +914,7 @@ def render_prediction():
         # Ringkasan best model
         best_row = metrics_df.sort_values("f1_score", ascending=False).iloc[0]
 
-        c1, c2, c3, c4, c5 = st.columns(5)
+        c1, c2, c3, c4, c5 = st.columns([2, 1, 1, 1, 1])
 
         c1.metric(
             "Best Model",
