@@ -941,7 +941,8 @@ def render_prediction():
             f"{best_row['f1_score']:.4f}"
         )
 
-        sst.markdown("### Perbandingan Performa 6 Model")
+        st.markdown("### Perbandingan Performa 6 Model")
+
         # =========================
         # Data Metrics
         # =========================
