@@ -22,7 +22,7 @@
             "prediction_threshold": 0.5,
             "best_iteration": 829,
             "best_score": 0.405236951260492,
-            "training_time_seconds": 1.4247894287109375,
+            "training_time_seconds": 1.0833170413970947,
             "train_shape": [
                 2397,
                 9
@@ -70,7 +70,7 @@
             "prediction_threshold": 0.5,
             "best_iteration": 881,
             "best_score": 0.37434657668126664,
-            "training_time_seconds": 1.5218908786773682,
+            "training_time_seconds": 1.106612205505371,
             "train_shape": [
                 2797,
                 9
@@ -118,7 +118,7 @@
             "prediction_threshold": 0.5,
             "best_iteration": 957,
             "best_score": 0.3666606085069361,
-            "training_time_seconds": 1.2860984802246094,
+            "training_time_seconds": 1.184755802154541,
             "train_shape": [
                 3196,
                 9
@@ -164,9 +164,9 @@
             "model_json": "models/optuna_split_60_40.json",
             "model_joblib": "models/optuna_split_60_40.joblib",
             "prediction_threshold": 0.5,
-            "best_iteration": 1647,
-            "best_score": 0.40674826832330335,
-            "training_time_seconds": 2.1336660385131836,
+            "best_iteration": 1850,
+            "best_score": 0.36971409110300124,
+            "training_time_seconds": 2.948103189468384,
             "train_shape": [
                 2397,
                 9
@@ -176,14 +176,14 @@
                 9
             ],
             "params": {
-                "max_depth": 9,
-                "eta": 0.01944031153326643,
-                "subsample": 0.75002567741932,
-                "colsample_bytree": 0.8107029305163936,
-                "lambda": 1.8722951586005685,
-                "alpha": 0.008730752370866094,
-                "gamma": 0.33401244834915955,
-                "min_child_weight": 6,
+                "max_depth": 7,
+                "eta": 0.01260163062129055,
+                "subsample": 0.6710637033599773,
+                "colsample_bytree": 0.8875491003151981,
+                "lambda": 0.6911200244953648,
+                "alpha": 5.318923451791638e-08,
+                "gamma": 0.2787793709683285,
+                "min_child_weight": 1,
                 "objective": "binary:logistic",
                 "eval_metric": "logloss",
                 "seed": 42,
@@ -191,19 +191,19 @@
                 "tree_method": "hist"
             },
             "metrics": {
-                "accuracy": 0.8255159474671669,
-                "precision": 0.825,
-                "recall": 0.8260325406758448,
-                "f1_score": 0.8255159474671669
+                "accuracy": 0.8280175109443402,
+                "precision": 0.8316455696202532,
+                "recall": 0.8222778473091364,
+                "f1_score": 0.8269351793580868
             },
             "confusion_matrix": {
-                "tp": 660,
-                "fp": 140,
-                "fn": 139,
-                "tn": 660,
+                "tp": 657,
+                "fp": 133,
+                "fn": 142,
+                "tn": 667,
                 "total": 1599
             },
-            "best_cv_logloss": 0.44988584563597056
+            "best_cv_logloss": 0.4199057020247989
         },
         "optuna_split_70_30": {
             "key": "optuna_split_70_30",
@@ -214,9 +214,9 @@
             "model_json": "models/optuna_split_70_30.json",
             "model_joblib": "models/optuna_split_70_30.joblib",
             "prediction_threshold": 0.5,
-            "best_iteration": 1475,
-            "best_score": 0.33790564465538847,
-            "training_time_seconds": 2.3458468914031982,
+            "best_iteration": 1217,
+            "best_score": 0.35093534705881574,
+            "training_time_seconds": 1.482034683227539,
             "train_shape": [
                 2797,
                 9
@@ -227,13 +227,13 @@
             ],
             "params": {
                 "max_depth": 9,
-                "eta": 0.018056274623464683,
-                "subsample": 0.7817299962162099,
-                "colsample_bytree": 0.5509853517755481,
-                "lambda": 0.6543125976700668,
-                "alpha": 0.009604109913227696,
-                "gamma": 0.03639173744483071,
-                "min_child_weight": 2,
+                "eta": 0.032206741817226575,
+                "subsample": 0.6987297414322293,
+                "colsample_bytree": 0.7089535696300784,
+                "lambda": 3.3070363700514602,
+                "alpha": 0.00011537788483366966,
+                "gamma": 0.4074338674415882,
+                "min_child_weight": 1,
                 "objective": "binary:logistic",
                 "eval_metric": "logloss",
                 "seed": 42,
@@ -241,19 +241,19 @@
                 "tree_method": "hist"
             },
             "metrics": {
-                "accuracy": 0.8440366972477065,
-                "precision": 0.856401384083045,
-                "recall": 0.8263772954924875,
-                "f1_score": 0.8411214953271028
+                "accuracy": 0.8548790658882403,
+                "precision": 0.8607809847198642,
+                "recall": 0.8464106844741235,
+                "f1_score": 0.8535353535353535
             },
             "confusion_matrix": {
-                "tp": 495,
-                "fp": 83,
-                "fn": 104,
-                "tn": 517,
+                "tp": 507,
+                "fp": 82,
+                "fn": 92,
+                "tn": 518,
                 "total": 1199
             },
-            "best_cv_logloss": 0.3842556895210302
+            "best_cv_logloss": 0.3841196541435973
         },
         "optuna_split_80_20": {
             "key": "optuna_split_80_20",
@@ -264,9 +264,9 @@
             "model_json": "models/optuna_split_80_20.json",
             "model_joblib": "models/optuna_split_80_20.joblib",
             "prediction_threshold": 0.5,
-            "best_iteration": 1066,
-            "best_score": 0.3121070780260197,
-            "training_time_seconds": 2.377420663833618,
+            "best_iteration": 733,
+            "best_score": 0.30469967962868394,
+            "training_time_seconds": 1.3117609024047852,
             "train_shape": [
                 3196,
                 9
@@ -277,12 +277,12 @@
             ],
             "params": {
                 "max_depth": 9,
-                "eta": 0.01849040781531601,
-                "subsample": 0.5003863959765442,
-                "colsample_bytree": 0.9207345568094069,
-                "lambda": 0.15319121299783653,
-                "alpha": 2.567028525573608e-06,
-                "gamma": 0.23812818704708735,
+                "eta": 0.04319049936448768,
+                "subsample": 0.8000845799512873,
+                "colsample_bytree": 0.5503052291934771,
+                "lambda": 1.3759133191628674,
+                "alpha": 2.7800754427062272e-08,
+                "gamma": 0.029289587683221964,
                 "min_child_weight": 1,
                 "objective": "binary:logistic",
                 "eval_metric": "logloss",
@@ -291,19 +291,19 @@
                 "tree_method": "hist"
             },
             "metrics": {
-                "accuracy": 0.85875,
-                "precision": 0.8826666666666667,
-                "recall": 0.8275,
-                "f1_score": 0.8541935483870968
+                "accuracy": 0.86,
+                "precision": 0.8789473684210526,
+                "recall": 0.835,
+                "f1_score": 0.8564102564102564
             },
             "confusion_matrix": {
-                "tp": 331,
-                "fp": 44,
-                "fn": 69,
-                "tn": 356,
+                "tp": 334,
+                "fp": 46,
+                "fn": 66,
+                "tn": 354,
                 "total": 800
             },
-            "best_cv_logloss": 0.3393262285911767
+            "best_cv_logloss": 0.33360092406961545
         }
     }
 }

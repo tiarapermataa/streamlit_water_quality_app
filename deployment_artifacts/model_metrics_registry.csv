@@ -1,7 +1,7 @@
 model_key,display_name,model_type,split,best_iteration,best_score,accuracy,precision,recall,f1_score,model_json,model_joblib
 baseline_split_60_40,Baseline Split 60:40,baseline,60:40,829,0.405236951260492,0.8148843026891808,0.8187579214195184,0.8085106382978723,0.8136020151133502,models/baseline_split_60_40.json,models/baseline_split_60_40.joblib
-optuna_split_60_40,Optuna Split 60:40,optuna,60:40,1647,0.40674826832330335,0.8255159474671669,0.825,0.8260325406758448,0.8255159474671669,models/optuna_split_60_40.json,models/optuna_split_60_40.joblib
+optuna_split_60_40,Optuna Split 60:40,optuna,60:40,1850,0.36971409110300124,0.8280175109443402,0.8316455696202532,0.8222778473091364,0.8269351793580868,models/optuna_split_60_40.json,models/optuna_split_60_40.joblib
 baseline_split_70_30,Baseline Split 70:30,baseline,70:30,881,0.37434657668126664,0.8323603002502085,0.8454861111111112,0.8130217028380634,0.828936170212766,models/baseline_split_70_30.json,models/baseline_split_70_30.joblib
-optuna_split_70_30,Optuna Split 70:30,optuna,70:30,1475,0.33790564465538847,0.8440366972477065,0.856401384083045,0.8263772954924875,0.8411214953271028,models/optuna_split_70_30.json,models/optuna_split_70_30.joblib
+optuna_split_70_30,Optuna Split 70:30,optuna,70:30,1217,0.35093534705881574,0.8548790658882403,0.8607809847198642,0.8464106844741235,0.8535353535353535,models/optuna_split_70_30.json,models/optuna_split_70_30.joblib
 baseline_split_80_20,Baseline Split 80:20,baseline,80:20,957,0.3666606085069361,0.84375,0.8647214854111406,0.815,0.8391248391248392,models/baseline_split_80_20.json,models/baseline_split_80_20.joblib
-optuna_split_80_20,Optuna Split 80:20,optuna,80:20,1066,0.3121070780260197,0.85875,0.8826666666666667,0.8275,0.8541935483870968,models/optuna_split_80_20.json,models/optuna_split_80_20.joblib
+optuna_split_80_20,Optuna Split 80:20,optuna,80:20,733,0.30469967962868394,0.86,0.8789473684210526,0.835,0.8564102564102564,models/optuna_split_80_20.json,models/optuna_split_80_20.joblib
