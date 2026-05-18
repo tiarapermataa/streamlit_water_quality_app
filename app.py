@@ -668,20 +668,19 @@ except Exception as e:
     st.exception(e)
     st.stop()
 
-
 # =====================================================
 # Informasi Fitur dan Nilai Default
 # =====================================================
 DEFAULT_VALUES = {
-    "ph": 7.0,
-    "Hardness": 200.0,
-    "Solids": 20000.0,
-    "Chloramines": 7.0,
-    "Sulfate": 330.0,
-    "Conductivity": 425.0,
-    "Organic_carbon": 14.0,
-    "Trihalomethanes": 66.0,
-    "Turbidity": 4.0,
+    "ph": 8.1377,
+    "Hardness": 203.8618,
+    "Solids": 24172.7033,
+    "Chloramines": 6.8440,
+    "Sulfate": 305.8325,
+    "Conductivity": 470.8362,
+    "Organic_carbon": 19.2329,
+    "Trihalomethanes": 30.7084,
+    "Turbidity": 5.0038,
 }
 
 FEATURE_DESCRIPTIONS = {
